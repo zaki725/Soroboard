@@ -1,0 +1,232 @@
+import { Injectable, Inject } from '@nestjs/common';
+import type { IUniversityRepository } from '../../domain/university/university.repository.interface';
+import type { IUniversityRankRepository } from '../../domain/university-rank/university-rank.repository.interface';
+import type { IFacultyRepository } from '../../domain/faculty/faculty.repository.interface';
+import { CreateUniversityEntity } from '../../domain/university/university.entity';
+import {
+  CreateUniversityRankEntity,
+  UpdateUniversityRankEntity,
+} from '../../domain/university-rank/university-rank.entity';
+import { CreateFacultyEntity } from '../../domain/faculty/faculty.entity';
+import { UniversityResponseDto } from '../../../query/dto/university/university.dto';
+import { INJECTION_TOKENS } from '../../constants/injection-tokens';
+import { BadRequestError } from '../../../common/errors/bad-request.error';
+import { CREATE } from '../../../common/constants';
+import { UniversityRankLevel } from '@prisma/client';
+import { UniversityDao } from '../../../query/dao/university/university.dao';
+import { PrismaService } from '../../../prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { DeviationValueService } from '../deviation-value/deviation-value.service';
+
+@Injectable()
+export class UniversityBulkService {
+  constructor(
+    @Inject(INJECTION_TOKENS.IUniversityRepository)
+    private readonly universityRepository: IUniversityRepository,
+    @Inject(INJECTION_TOKENS.IUniversityRankRepository)
+    private readonly universityRankRepository: IUniversityRankRepository,
+    @Inject(INJECTION_TOKENS.IFacultyRepository)
+    private readonly facultyRepository: IFacultyRepository,
+    private readonly universityDao: UniversityDao,
+    private readonly prismaService: PrismaService,
+    private readonly deviationValueService: DeviationValueService,
+  ) {}
+
+  async bulkCreate(params: {
+    name: string;
+    rank?: UniversityRankLevel;
+    faculties: Array<{
+      name: string;
+      deviationValue?: number;
+    }>;
+    userId: string;
+  }): Promise<UniversityResponseDto> {
+    if (!params.userId) {
+      throw new BadRequestError(CREATE.USER_ID_REQUIRED);
+    }
+
+    return await this.prismaService.$transaction(async () => {
+      const university = await this.findOrCreateUniversity({
+        name: params.name,
+        userId: params.userId,
+      });
+
+      await this.updateOrCreateUniversityRank({
+        universityId: university.id,
+        rank: params.rank,
+        userId: params.userId,
+      });
+
+      for (const facultyData of params.faculties) {
+        await this.createFacultyWithDeviationValue({
+          universityId: university.id,
+          facultyName: facultyData.name,
+          deviationValue: facultyData.deviationValue,
+          userId: params.userId,
+        });
+      }
+
+      return this.toResponseDtoWithRank(university.id);
+    });
+  }
+
+  private async findOrCreateUniversity({
+    name,
+    userId,
+  }: {
+    name: string;
+    userId: string;
+  }) {
+    try {
+      const createEntity = new CreateUniversityEntity({
+        name,
+        createdBy: userId,
+        updatedBy: userId,
+      });
+      const created = await this.universityRepository.create(createEntity);
+      const found = await this.universityDao.findOne({ id: created.id });
+
+      if (!found) {
+        throw new BadRequestError('大学の作成に失敗しました');
+      }
+
+      return found;
+    } catch (error) {
+      // If unique constraint error, fetch the existing university
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const existingUniversities = await this.universityDao.findAll({
+          search: name,
+        });
+        const existingUniversity = existingUniversities.find(
+          (u) => u.name === name,
+        );
+        if (existingUniversity) {
+          return existingUniversity;
+        }
+      }
+      throw error;
+    }
+  }
+
+  private async updateOrCreateUniversityRank({
+    universityId,
+    rank,
+    userId,
+  }: {
+    universityId: string;
+    rank?: UniversityRankLevel;
+    userId: string;
+  }) {
+    if (!rank) {
+      return;
+    }
+
+    const existingRank = await this.universityRankRepository.findByUniversityId(
+      {
+        universityId,
+      },
+    );
+
+    if (existingRank) {
+      const updateRankEntity = new UpdateUniversityRankEntity({
+        id: existingRank.id,
+        rank,
+        updatedBy: userId,
+      });
+      await this.universityRankRepository.update(updateRankEntity);
+    } else {
+      const createRankEntity = new CreateUniversityRankEntity({
+        universityId,
+        rank,
+        createdBy: userId,
+        updatedBy: userId,
+      });
+      await this.universityRankRepository.create(createRankEntity);
+    }
+  }
+
+  private async createFacultyWithDeviationValue({
+    universityId,
+    facultyName,
+    deviationValue,
+    userId,
+  }: {
+    universityId: string;
+    facultyName: string;
+    deviationValue?: number;
+    userId: string;
+  }) {
+    try {
+      const createFacultyEntity = new CreateFacultyEntity({
+        name: facultyName,
+        universityId,
+        createdBy: userId,
+        updatedBy: userId,
+      });
+      const faculty = await this.facultyRepository.create(createFacultyEntity);
+
+      if (deviationValue !== undefined) {
+        await this.deviationValueService.createOrUpdateByFacultyId({
+          facultyId: faculty.id,
+          value: deviationValue,
+          userId,
+        });
+      }
+    } catch (error) {
+      // Check for duplicate faculty error (P2002 unique constraint)
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        if (deviationValue !== undefined) {
+          await this.deviationValueService.updateByFacultyName({
+            universityId,
+            facultyName,
+            value: deviationValue,
+            userId,
+          });
+        }
+        return;
+      }
+      // Also check for BadRequestError with duplicate message as fallback
+      if (
+        error instanceof BadRequestError &&
+        error.message.includes('既に登録されています')
+      ) {
+        if (deviationValue !== undefined) {
+          await this.deviationValueService.updateByFacultyName({
+            universityId,
+            facultyName,
+            value: deviationValue,
+            userId,
+          });
+        }
+        return;
+      }
+      throw error;
+    }
+  }
+
+  private async toResponseDtoWithRank(
+    universityId: string,
+  ): Promise<UniversityResponseDto> {
+    const university = await this.universityDao.findOne({ id: universityId });
+
+    if (!university) {
+      throw new BadRequestError('大学の取得に失敗しました');
+    }
+
+    const rank = await this.universityRankRepository.findByUniversityId({
+      universityId,
+    });
+
+    return new UniversityResponseDto({
+      id: university.id,
+      name: university.name,
+      rank: rank?.rank,
+    });
+  }
+}
