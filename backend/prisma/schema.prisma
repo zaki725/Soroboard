@@ -1,0 +1,470 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ############################################################################
+//  ENUMS (列挙型)
+// ############################################################################
+
+enum UserRole {
+  user
+  admin
+  master
+}
+
+enum Gender {
+  male
+  female
+  other
+}
+
+enum InterviewerCategory {
+  フロント
+  現場社員
+}
+
+enum SelectionPeriod {
+  SI
+  MAIN
+}
+
+enum SelectionType {
+  INTERVIEW_DISCUSSION
+  INTERVIEW
+}
+
+enum SelectionStage {
+  FIRST
+  SECOND
+  THIRD
+  FINAL
+  BEFORE_OFFER
+}
+
+enum EducationType {
+  大学院
+  大学
+  短期大学
+  専門学校
+  高等学校
+  その他
+}
+
+enum UniversityRankLevel {
+  S
+  A
+  B
+  C
+  D
+}
+
+enum LocationType {
+  オンライン
+  対面
+  オンライン_対面
+}
+
+// ############################################################################
+//  ORGANIZATION MASTERS (組織・年度・職種)
+// ############################################################################
+
+/// 年度管理マスター
+model RecruitYear {
+  recruitYear Int    @id @map("recruit_year")
+  displayName String @map("display_name")
+  themeColor  String @map("theme_color")
+
+  // Relations
+  companies          Company[]
+  selectionProcesses SelectionProcess[]
+  eventMasters       EventMaster[]
+  searchConditions   SearchCondition[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("recruit_years")
+}
+
+/// 会社管理マスター
+model Company {
+  id          String  @id @default(ulid())
+  name        String
+  phoneNumber String? @map("phone_number")
+  email       String?
+  websiteUrl  String? @map("website_url")
+
+  // Relations
+  recruitYearId Int         @map("recruit_year_id")
+  recruitYear   RecruitYear @relation(fields: [recruitYearId], references: [recruitYear], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@unique([name, recruitYearId])
+  @@map("companies")
+}
+
+/// 部署管理マスター
+model Department {
+  id   String @id @default(ulid())
+  name String @unique
+
+  // Relations
+  users User[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("departments")
+}
+
+/// 職種管理マスター
+model JobCategory {
+  id   String @id @default(ulid())
+  name String @unique
+
+  // Relations
+  selectionProcesses SelectionProcess[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("job_categories")
+}
+
+// ############################################################################
+//  ACADEMIC MASTERS (大学・学部・学歴)
+// ############################################################################
+
+/// 大学管理マスター
+model University {
+  id   String @id @default(ulid())
+  name String @unique
+
+  // Relations
+  faculties              Faculty[]
+  ranks                  UniversityRank[]
+  interviewers           Interviewer[]
+  educationalBackgrounds EducationalBackground[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("universities")
+}
+
+/// 学部管理マスター
+model Faculty {
+  id   String @id @default(ulid())
+  name String
+
+  // Relations
+  universityId String     @map("university_id")
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  deviationValue         DeviationValue?
+  interviewers           Interviewer[]
+  educationalBackgrounds EducationalBackground[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@unique([name, universityId])
+  @@map("faculties")
+}
+
+/// 偏差値管理
+model DeviationValue {
+  id    String @id @default(ulid())
+  value Float
+
+  // Relations
+  facultyId String  @unique @map("faculty_id")
+  faculty   Faculty @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("deviation_values")
+}
+
+/// 大学ランク管理
+model UniversityRank {
+  id   String              @id @default(ulid())
+  rank UniversityRankLevel
+
+  // Relations
+  universityId String     @map("university_id")
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("university_ranks")
+}
+
+// ############################################################################
+//  USER & INTERVIEWER (ユーザー・面接官)
+// ############################################################################
+
+/// ユーザー管理
+model User {
+  id        String   @id @default(ulid())
+  email     String   @unique
+  role      UserRole @default(user)
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  gender    Gender?
+
+  // Relations
+  departmentId String     @map("department_id")
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+
+  interviewer Interviewer?
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("users")
+}
+
+/// 面接官管理
+model Interviewer {
+  category InterviewerCategory
+
+  // Relations
+  userId String @id @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  universityId String?     @map("university_id")
+  university   University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
+
+  facultyId String?  @map("faculty_id")
+  faculty   Faculty? @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+
+  educationalBackgrounds EducationalBackground[]
+  eventInterviewers      EventInterviewer[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("interviewers")
+}
+
+/// 面接官学歴詳細
+model EducationalBackground {
+  id              String        @id @default(ulid())
+  educationType   EducationType @map("education_type")
+  graduationYear  Int?          @map("graduation_year")
+  graduationMonth Int?          @map("graduation_month")
+
+  // Relations
+  interviewerId String      @map("interviewer_id")
+  interviewer   Interviewer @relation(fields: [interviewerId], references: [userId], onDelete: Cascade)
+
+  universityId String?     @map("university_id")
+  university   University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
+
+  facultyId String?  @map("faculty_id")
+  faculty   Faculty? @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("educational_backgrounds")
+}
+
+// ############################################################################
+//  SELECTION PROCESS (選考プロセス)
+// ############################################################################
+
+/// 選考フロー定義
+model SelectionProcess {
+  id              String          @id @default(ulid())
+  stage           SelectionStage  @map("stage")
+  order           Int
+  selectionPeriod SelectionPeriod @map("selection_period")
+  selectionType   SelectionType   @map("selection_type")
+
+  // Relations
+  recruitYearId       Int         @map("recruit_year_id")
+  recruitYearRelation RecruitYear @relation(fields: [recruitYearId], references: [recruitYear], onDelete: Cascade)
+
+  jobCategoryId String      @map("job_category_id")
+  jobCategory   JobCategory @relation(fields: [jobCategoryId], references: [id], onDelete: Restrict)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@unique([recruitYearId, order], name: "recruitYearId_order")
+  @@unique([recruitYearId, stage, selectionPeriod, selectionType, jobCategoryId], name: "recruitYearId_stage_period_type_category")
+  @@map("selection_processes")
+}
+
+// ############################################################################
+//  EVENT MANAGEMENT (イベント管理)
+// ############################################################################
+
+/// 採用イベントマスター
+model EventMaster {
+  id          String       @id @default(ulid())
+  name        String
+  description String?
+  type        LocationType
+
+  // Relations
+  recruitYearId Int         @map("recruit_year_id")
+  recruitYear   RecruitYear @relation(fields: [recruitYearId], references: [recruitYear], onDelete: Cascade)
+
+  events Event[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("event_masters")
+}
+
+/// イベント
+model Event {
+  id        String    @id @default(ulid())
+  startTime DateTime  @map("start_time")
+  endTime   DateTime? @map("end_time")
+  notes     String?
+
+  // Relations
+  eventMasterId String      @map("event_master_id")
+  eventMaster   EventMaster @relation(fields: [eventMasterId], references: [id], onDelete: Cascade)
+
+  locationId String   @map("location_id")
+  location   EventLocation @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  address    String?       @map("address")
+
+  eventInterviewers EventInterviewer[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("events")
+}
+
+/// 場所
+model EventLocation {
+  id      String @id @default(ulid())
+  name    String
+
+  // Relations
+  events Event[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@unique([name])
+  @@map("locations")
+}
+
+/// イベントと面接官の中間テーブル
+model EventInterviewer {
+  // Relations
+  eventId String @map("event_id")
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  interviewerId String      @map("interviewer_id")
+  interviewer   Interviewer @relation(fields: [interviewerId], references: [userId], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@id([eventId, interviewerId])
+  @@map("event_interviewers")
+}
+
+// ############################################################################
+//  SYSTEM / INFRA (システム基盤)
+// ############################################################################
+
+/// アウトボックス（非同期イベント用）
+model Outbox {
+  id        String @id @default(ulid())
+  eventType String @map("event_type")
+  payload   Json
+  status    String @default("pending") // pending, processed, failed
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  processedAt DateTime? @map("processed_at") @db.Timestamptz
+
+  @@map("outbox")
+}
+
+/// 検索条件保存
+model SearchCondition {
+  id        String @id @default(ulid())
+  formType  String @map("form_type") // 検索フォームの種類（例: "user", "company", "university"など）
+  name      String // 保存された検索条件の名前
+  urlParams String @map("url_params") // URLパラメータを文字列で保存（クエリ文字列形式）
+
+  recruitYearId Int?         @map("recruit_year_id")
+  recruitYear   RecruitYear? @relation(fields: [recruitYearId], references: [recruitYear], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@unique([formType, recruitYearId, name])
+  @@map("search_conditions")
+}
