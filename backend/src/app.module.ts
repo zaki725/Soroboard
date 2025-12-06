@@ -14,6 +14,7 @@ import { EventLocationModule } from './modules/event-location/event-location.mod
 import { EventMasterModule } from './modules/event-master/event-master.module';
 import { EventModule } from './modules/event/event.module';
 import { SearchConditionModule } from './modules/search-condition/search-condition.module';
+import { TeacherModule } from './modules/teacher/teacher.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { SearchConditionModule } from './modules/search-condition/search-conditi
     EventMasterModule,
     EventModule,
     SearchConditionModule,
+    TeacherModule,
   ],
   controllers: [],
   providers: [],

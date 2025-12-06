@@ -25,6 +25,9 @@ CREATE TYPE "UniversityRankLevel" AS ENUM ('S', 'A', 'B', 'C', 'D');
 -- CreateEnum
 CREATE TYPE "LocationType" AS ENUM ('オンライン', '対面', 'オンライン_対面');
 
+-- CreateEnum
+CREATE TYPE "TeacherRole" AS ENUM ('OWNER', 'STAFF');
+
 -- CreateTable
 CREATE TABLE "recruit_years" (
     "recruit_year" INTEGER NOT NULL,
@@ -64,6 +67,38 @@ CREATE TABLE "departments" (
     "updated_by" TEXT NOT NULL,
 
     CONSTRAINT "departments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "schools" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_by" TEXT NOT NULL,
+
+    CONSTRAINT "schools_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "teachers" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "role_in_school" "TeacherRole" NOT NULL,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "hourly_rate" INTEGER,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "memo" TEXT,
+    "school_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_by" TEXT NOT NULL,
+
+    CONSTRAINT "teachers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -284,6 +319,12 @@ CREATE UNIQUE INDEX "companies_name_recruit_year_id_key" ON "companies"("name", 
 CREATE UNIQUE INDEX "departments_name_key" ON "departments"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "teachers_email_key" ON "teachers"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "job_categories_name_key" ON "job_categories"("name");
 
 -- CreateIndex
@@ -312,6 +353,9 @@ CREATE UNIQUE INDEX "search_conditions_form_type_recruit_year_id_name_key" ON "s
 
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_recruit_year_id_fkey" FOREIGN KEY ("recruit_year_id") REFERENCES "recruit_years"("recruit_year") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teachers" ADD CONSTRAINT "teachers_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "faculties" ADD CONSTRAINT "faculties_university_id_fkey" FOREIGN KEY ("university_id") REFERENCES "universities"("id") ON DELETE CASCADE ON UPDATE CASCADE;

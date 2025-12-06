@@ -9,6 +9,8 @@ import { seedUniversities } from './seeds/university.seed';
 import { seedFaculties } from './seeds/faculty.seed';
 import { seedDeviationValues } from './seeds/deviation-value.seed';
 import { seedLocations } from './seeds/location.seed';
+import { seedSchools } from './seeds/school.seed';
+import { seedTeachers } from './seeds/teacher.seed';
 
 // DATABASE_URLが未設定の場合はデフォルト値を設定
 if (!process.env.DATABASE_URL) {
@@ -38,6 +40,10 @@ async function main() {
     await seedLocations({ prisma });
     console.log('');
 
+    // Schoolはマスタデータなので先に作成
+    await seedSchools({ prisma });
+    console.log('');
+
     // JobCategoryはSelectionProcessに必要なので先に作成
     await seedJobCategories({ prisma });
     console.log('');
@@ -62,6 +68,10 @@ async function main() {
 
     // Companyを後で作成（RecruitYearに依存）
     await seedCompanies({ prisma });
+    console.log('');
+
+    // Teacherを後で作成（Schoolに依存）
+    await seedTeachers({ prisma });
     console.log('');
 
     console.log('すべてのシードが正常に完了しました！');

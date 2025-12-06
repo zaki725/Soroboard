@@ -69,6 +69,11 @@ enum LocationType {
   オンライン_対面
 }
 
+enum TeacherRole {
+  OWNER
+  STAFF
+}
+
 // ############################################################################
 //  ORGANIZATION MASTERS (組織・年度・職種)
 // ############################################################################
@@ -131,6 +136,48 @@ model Department {
   updatedBy String   @map("updated_by")
 
   @@map("departments")
+}
+
+/// 塾管理マスター
+model School {
+  id       String  @id @default(ulid())
+  name     String  @unique
+  isActive Boolean @default(true) @map("is_active")
+
+  // Relations
+  teachers Teacher[]
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("schools")
+}
+
+/// 先生管理マスター
+model Teacher {
+  id          String      @id @default(ulid())
+  email       String      @unique
+  roleInSchool TeacherRole @map("role_in_school")
+  firstName   String      @map("first_name")
+  lastName    String      @map("last_name")
+  hourlyRate  Int?        @map("hourly_rate")
+  isActive    Boolean     @default(true) @map("is_active")
+  memo        String?
+
+  // Relations
+  schoolId String @map("school_id")
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("teachers")
 }
 
 /// 職種管理マスター
