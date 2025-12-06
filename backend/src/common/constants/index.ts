@@ -3,6 +3,7 @@
  * すべての定数はここから取得すること
  */
 
+export * from './field-name';
 export * from './validation';
 export * from './business-error';
 export * from './not-found-error';
