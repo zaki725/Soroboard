@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { TeacherService } from '../../application/teacher/teacher.service';
-import { TeacherResponseDto } from '../../dto/teacher/teacher.dto';
+import { TeacherResponseDto } from '../../dto/teacher/teacher-response.dto';
 import {
   teacherListQuerySchema,
   type TeacherListQueryDto,

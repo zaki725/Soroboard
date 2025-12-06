@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TeacherDao } from '../../dao/teacher/teacher.dao';
-import { TeacherResponseDto } from '../../dto/teacher/teacher.dto';
+import { TeacherResponseDto } from '../../dto/teacher/teacher-response.dto';
 import { NotFoundError } from '../../../common/errors/not-found.error';
 import { RESOURCE_NAME } from '../../../common/constants';
 
