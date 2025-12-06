@@ -30,10 +30,7 @@ export const useTeacherList = () => {
   // エラーメッセージを取得
   const error = useMemo(() => {
     if (!swrError) return null;
-    return extractErrorMessage(
-      swrError,
-      errorMessages.teacherListFetchFailed,
-    );
+    return extractErrorMessage(swrError, errorMessages.teacherListFetchFailed);
   }, [swrError]);
 
   return {
@@ -44,4 +41,3 @@ export const useTeacherList = () => {
     schoolId,
   };
 };
-

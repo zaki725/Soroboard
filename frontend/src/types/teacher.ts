@@ -11,4 +11,3 @@ export type TeacherResponseDto = {
   memo: string | null;
   schoolId: string;
 };
-

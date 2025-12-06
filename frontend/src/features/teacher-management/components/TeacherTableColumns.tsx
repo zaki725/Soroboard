@@ -45,4 +45,3 @@ export const getTableColumns = (): TableColumn<TeacherResponseDto>[] => {
     },
   ];
 };
-
