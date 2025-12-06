@@ -133,6 +133,21 @@ model Department {
   @@map("departments")
 }
 
+/// 塾管理マスター
+model School {
+  id       String  @id @default(ulid())
+  name     String
+  isActive Boolean @default(true) @map("is_active")
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@map("schools")
+}
+
 /// 職種管理マスター
 model JobCategory {
   id   String @id @default(ulid())
