@@ -141,7 +141,7 @@ model Department {
 /// 塾管理マスター
 model School {
   id       String  @id @default(ulid())
-  name     String
+  name     String  @unique
   isActive Boolean @default(true) @map("is_active")
 
   // Relations
@@ -159,7 +159,7 @@ model School {
 /// 先生管理マスター
 model Teacher {
   id          String      @id @default(ulid())
-  email       String
+  email       String      @unique
   roleInSchool TeacherRole @map("role_in_school")
   firstName   String      @map("first_name")
   lastName    String      @map("last_name")
