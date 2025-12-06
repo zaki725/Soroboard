@@ -25,7 +25,7 @@ export class TeacherResponseDto {
   @ApiProperty({ description: '時給', nullable: true, required: false })
   hourlyRate: number | null;
 
-  @ApiProperty({ description: '有効フラグ' })
+  @ApiProperty({ description: '在籍状況' })
   isActive: boolean;
 
   @ApiProperty({ description: 'メモ', nullable: true, required: false })
