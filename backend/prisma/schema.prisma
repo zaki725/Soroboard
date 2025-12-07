@@ -74,6 +74,11 @@ enum TeacherRole {
   STAFF
 }
 
+enum AuthUserRole {
+  TEACHER
+  ADMIN
+}
+
 // ############################################################################
 //  ORGANIZATION MASTERS (組織・年度・職種)
 // ############################################################################
@@ -170,6 +175,9 @@ model Teacher {
   // Relations
   schoolId String @map("school_id")
   school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  authUserId String?   @map("auth_user_id") @unique
+  authUser   AuthUser? @relation(fields: [authUserId], references: [id], onDelete: SetNull)
 
   // Audit
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -514,4 +522,27 @@ model SearchCondition {
 
   @@unique([formType, recruitYearId, name])
   @@map("search_conditions")
+}
+
+/// ログイン用アカウント
+model AuthUser {
+  id           String       @id @default(ulid())
+  email        String       @unique
+  passwordHash String       @map("password_hash")
+  role         AuthUserRole @default(TEACHER)
+
+  lastLoginAt DateTime? @map("last_login_at") @db.Timestamptz
+
+  // Relations
+  teacher Teacher?
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+  deletedBy String?   @map("deleted_by")
+
+  @@map("auth_users")
 }
