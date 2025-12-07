@@ -1,10 +1,6 @@
 import type { TableColumn } from '@/components/ui';
-import type { TeacherResponseDto, TeacherRole } from '@/types/teacher';
-
-const roleLabelMap: Record<TeacherRole, string> = {
-  OWNER: '塾長',
-  STAFF: 'スタッフ',
-};
+import type { TeacherResponseDto } from '@/types/teacher';
+import { roleLabelMap } from '../constants/teacher.constants';
 
 export const getTableColumns = (): TableColumn<TeacherResponseDto>[] => {
   return [

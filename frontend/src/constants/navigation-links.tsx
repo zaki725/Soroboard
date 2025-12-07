@@ -3,14 +3,7 @@ import type { UserRole } from '@/types/user';
 import {
   ApplicantIcon,
   UserManagementIcon,
-  RecruitYearIcon,
-  CompanyIcon,
-  MailIcon,
-  InterviewerIcon,
-  DepartmentIcon,
-  UniversityIcon,
   LocationIcon,
-  CalendarIcon,
 } from '@/components/ui/icons';
 
 export type NavigationLink = {
@@ -31,34 +24,6 @@ export const navigationLinks: NavigationLink[] = [
     icon: <ApplicantIcon />,
   },
   {
-    href: '/mail/management',
-    label: 'メール管理',
-    description: 'メールの送信・管理を行います',
-    requiredRole: 'user',
-    icon: <MailIcon />,
-  },
-  {
-    href: '/admin/interviewer-management',
-    label: '面接官管理',
-    description: '面接官の追加・編集を行います',
-    requiredRole: 'admin',
-    icon: <InterviewerIcon />,
-  },
-  {
-    href: '/admin/event-management',
-    label: 'イベント管理',
-    description: 'イベントの追加・編集を行います',
-    requiredRole: 'admin',
-    icon: <CalendarIcon />,
-  },
-  {
-    href: '/master/recruit-year-management',
-    label: '年度管理',
-    description: '年度の追加・編集を行います',
-    requiredRole: 'master',
-    icon: <RecruitYearIcon />,
-  },
-  {
     href: '/master/user-management',
     label: 'ユーザー管理',
     description: 'ユーザーの追加・編集を行います',
@@ -66,25 +31,11 @@ export const navigationLinks: NavigationLink[] = [
     icon: <UserManagementIcon />,
   },
   {
-    href: '/master/company-management',
-    label: '会社管理',
-    description: '会社の追加・編集を行います',
+    href: '/master/teachers',
+    label: '先生管理',
+    description: '先生の追加・編集を行います',
     requiredRole: 'master',
-    icon: <CompanyIcon />,
-  },
-  {
-    href: '/master/department-management',
-    label: '部署管理',
-    description: '部署の追加・編集を行います',
-    requiredRole: 'master',
-    icon: <DepartmentIcon />,
-  },
-  {
-    href: '/master/university-management',
-    label: '大学管理',
-    description: '大学の追加・編集を行います',
-    requiredRole: 'master',
-    icon: <UniversityIcon />,
+    icon: <UserManagementIcon />,
   },
   {
     href: '/master/event-location-management',
@@ -92,13 +43,6 @@ export const navigationLinks: NavigationLink[] = [
     description: 'ロケーションの追加・編集を行います',
     requiredRole: 'master',
     icon: <LocationIcon />,
-  },
-  {
-    href: '/master/event-master-management',
-    label: 'イベントマスター管理',
-    description: 'イベントマスターの追加・編集を行います',
-    requiredRole: 'master',
-    icon: <CalendarIcon />,
   },
 ];
 
