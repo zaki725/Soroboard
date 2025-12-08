@@ -546,3 +546,13 @@ model AuthUser {
 
   @@map("auth_users")
 }
+
+/// セッションストア（express-session用）
+model Session {
+  sid  String  @id
+  sess Json
+  expire DateTime @db.Timestamptz
+
+  @@map("session")
+  @@index([expire])
+}
