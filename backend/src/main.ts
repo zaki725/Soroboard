@@ -5,6 +5,10 @@ import { CustomLoggerService } from './config/custom-logger.service';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TraceService } from './common/services/trace.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import { Pool } from 'pg';
+import { SESSION_MAX_AGE_MS } from './common/constants';
 
 // DATABASE_URLが未設定の場合はデフォルト値を設定
 if (!process.env.DATABASE_URL) {
@@ -20,7 +24,37 @@ async function bootstrap() {
   const logger = app.get(CustomLoggerService);
   const traceService = app.get(TraceService);
 
-  app.enableCors();
+  // PostgreSQL接続プールの作成（セッションストア用）
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  // connect-pg-simpleのセッションストアを初期化
+  const PgSession = connectPgSimple(session);
+
+  // express-sessionの設定
+  app.use(
+    session({
+      store: new PgSession({
+        pool: pool,
+        tableName: 'session', // Prismaスキーマで定義したテーブル名
+        createTableIfMissing: true, // テーブルが存在しない場合は自動作成
+      }),
+      secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: SESSION_MAX_AGE_MS,
+      },
+    }),
+  );
+
+  app.enableCors({
+    origin: true,
+    credentials: true, // セッションクッキーを許可
+  });
   app.useGlobalFilters(new GlobalExceptionFilter(logger));
   app.useGlobalInterceptors(new LoggingInterceptor(logger, traceService));
 
