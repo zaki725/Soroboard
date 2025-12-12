@@ -41,17 +41,6 @@ export class AuthController {
     // セッションにユーザー情報を保存
     req.session.user = user;
 
-    // セッションを明示的に保存
-    await new Promise<void>((resolve, reject) => {
-      req.session.save((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
-
     return {
       message: 'ログインに成功しました',
       user: {
