@@ -28,6 +28,9 @@ CREATE TYPE "LocationType" AS ENUM ('オンライン', '対面', 'オンライ�
 -- CreateEnum
 CREATE TYPE "TeacherRole" AS ENUM ('OWNER', 'STAFF');
 
+-- CreateEnum
+CREATE TYPE "AuthUserRole" AS ENUM ('TEACHER', 'ADMIN');
+
 -- CreateTable
 CREATE TABLE "recruit_years" (
     "recruit_year" INTEGER NOT NULL,
@@ -93,6 +96,7 @@ CREATE TABLE "teachers" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "memo" TEXT,
     "school_id" TEXT NOT NULL,
+    "auth_user_id" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT NOT NULL,
     "updated_at" TIMESTAMPTZ NOT NULL,
@@ -312,6 +316,32 @@ CREATE TABLE "search_conditions" (
     CONSTRAINT "search_conditions_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "auth_users" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password_hash" TEXT NOT NULL,
+    "role" "AuthUserRole" NOT NULL DEFAULT 'TEACHER',
+    "last_login_at" TIMESTAMPTZ,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_by" TEXT NOT NULL,
+    "deleted_at" TIMESTAMPTZ,
+    "deleted_by" TEXT,
+
+    CONSTRAINT "auth_users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "session" (
+    "sid" TEXT NOT NULL,
+    "sess" JSONB NOT NULL,
+    "expire" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "companies_name_recruit_year_id_key" ON "companies"("name", "recruit_year_id");
 
@@ -323,6 +353,9 @@ CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "teachers_email_key" ON "teachers"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "teachers_auth_user_id_key" ON "teachers"("auth_user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "job_categories_name_key" ON "job_categories"("name");
@@ -351,11 +384,20 @@ CREATE UNIQUE INDEX "locations_name_key" ON "locations"("name");
 -- CreateIndex
 CREATE UNIQUE INDEX "search_conditions_form_type_recruit_year_id_name_key" ON "search_conditions"("form_type", "recruit_year_id", "name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "auth_users_email_key" ON "auth_users"("email");
+
+-- CreateIndex
+CREATE INDEX "session_expire_idx" ON "session"("expire");
+
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_recruit_year_id_fkey" FOREIGN KEY ("recruit_year_id") REFERENCES "recruit_years"("recruit_year") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "teachers" ADD CONSTRAINT "teachers_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teachers" ADD CONSTRAINT "teachers_auth_user_id_fkey" FOREIGN KEY ("auth_user_id") REFERENCES "auth_users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "faculties" ADD CONSTRAINT "faculties_university_id_fkey" FOREIGN KEY ("university_id") REFERENCES "universities"("id") ON DELETE CASCADE ON UPDATE CASCADE;
