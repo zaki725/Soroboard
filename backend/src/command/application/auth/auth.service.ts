@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { IAuthUserRepository } from '../../domain/auth/auth-user.repository.interface';
-import { AuthUserEntity } from '../../domain/auth/auth-user.entity';
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 import type { LoginResponseDto } from '../../dto/auth/auth.dto';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';

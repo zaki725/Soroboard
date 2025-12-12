@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 
