@@ -1,5 +1,4 @@
 import type { AuthUserRole } from '@prisma/client';
-import type { PasswordHasher } from './password-hasher.interface';
 
 type AuthUserProps = {
   id: string;
@@ -28,16 +27,6 @@ export class AuthUserEntity {
     );
   }
 
-  /**
-   * パスワードの検証
-   */
-  async verifyPassword(
-    rawPassword: string,
-    hasher: PasswordHasher,
-  ): Promise<boolean> {
-    return hasher.compare(rawPassword, this._passwordHash);
-  }
-
   // =================================================================
   // Getter (必要なものだけ公開する)
   // =================================================================
@@ -51,6 +40,10 @@ export class AuthUserEntity {
 
   get role(): AuthUserRole {
     return this._role;
+  }
+
+  get passwordHash(): string {
+    return this._passwordHash;
   }
 }
 

@@ -13,12 +13,10 @@ import { INJECTION_TOKENS } from '../../command/constants/injection-tokens';
       provide: INJECTION_TOKENS.IAuthUserRepository,
       useClass: AuthUserRepository,
     },
-    AuthUserRepository,
     {
       provide: INJECTION_TOKENS.PasswordHasher,
       useClass: BcryptPasswordHasher,
     },
-    BcryptPasswordHasher,
   ],
 })
 export class AuthCommandModule {}
