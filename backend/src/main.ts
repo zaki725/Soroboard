@@ -12,10 +12,16 @@ import {
   SESSION_MAX_AGE_MS,
   SESSION_SECRET_REQUIRED,
   CORS_ORIGIN_REQUIRED,
+  DATABASE_URL_REQUIRED,
 } from './common/constants';
 import { InternalServerError } from './common/errors/internal-server.error';
 
-// DATABASE_URLが未設定の場合はデフォルト値を設定
+// DATABASE_URLの検証（本番環境では必須）
+if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+  throw new InternalServerError(DATABASE_URL_REQUIRED);
+}
+
+// 開発環境用のデフォルト値（明示的にドキュメント化）
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL =
     'postgresql://postgres:postgres@localhost:5433/app?schema=public';

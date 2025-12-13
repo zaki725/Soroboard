@@ -205,7 +205,7 @@ describe('AuthController (Command) (e2e)', () => {
         })
         .expect(400);
 
-      expect(response.body.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('statusCode', 400);
     });
 
     it('異常系: パスワードが空の場合に400エラーが返る', async () => {
@@ -217,7 +217,7 @@ describe('AuthController (Command) (e2e)', () => {
         })
         .expect(400);
 
-      expect(response.body.statusCode).toBe(400);
+      expect(response.body).toHaveProperty('statusCode', 400);
     });
   });
 });

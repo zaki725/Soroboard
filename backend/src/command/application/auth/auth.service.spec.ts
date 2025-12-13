@@ -5,7 +5,6 @@ import type { IAuthUserRepository } from '../../domain/auth/auth-user.repository
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 import { AuthUserEntity } from '../../domain/auth/auth-user.entity';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
-import { INVALID_CREDENTIALS } from '../../../common/constants';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -83,9 +82,7 @@ describe('AuthService', () => {
         .spyOn(repository, 'findByEmail')
         .mockResolvedValue(null);
 
-      const compareSpy = jest
-        .spyOn(passwordHasher, 'compare')
-        .mockResolvedValue(false);
+      jest.spyOn(passwordHasher, 'compare').mockResolvedValue(false);
 
       await expect(
         service.login({
@@ -128,9 +125,7 @@ describe('AuthService', () => {
     });
 
     it('異常系: タイミング攻撃対策として、ユーザーが存在しない場合でもcompareが呼ばれる', async () => {
-      const findByEmailSpy = jest
-        .spyOn(repository, 'findByEmail')
-        .mockResolvedValue(null);
+      jest.spyOn(repository, 'findByEmail').mockResolvedValue(null);
 
       const compareSpy = jest
         .spyOn(passwordHasher, 'compare')

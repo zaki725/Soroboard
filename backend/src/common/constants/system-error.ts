@@ -8,3 +8,5 @@ export const SESSION_SECRET_REQUIRED =
   'SESSION_SECRET環境変数が設定されていません。';
 export const CORS_ORIGIN_REQUIRED =
   'CORS_ORIGIN環境変数が設定されていません。本番環境では必須です。';
+export const DATABASE_URL_REQUIRED =
+  'DATABASE_URL環境変数が設定されていません。本番環境では必須です。';
