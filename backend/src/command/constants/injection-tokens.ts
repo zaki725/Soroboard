@@ -14,5 +14,6 @@ export const INJECTION_TOKENS = {
   IEventRepository: Symbol('IEventRepository'),
   ISearchConditionRepository: Symbol('ISearchConditionRepository'),
   IAuthUserRepository: Symbol('IAuthUserRepository'),
+  ITeacherRepository: Symbol('ITeacherRepository'),
   PasswordHasher: Symbol('PasswordHasher'),
 } as const;
