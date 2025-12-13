@@ -15,7 +15,7 @@ import { INJECTION_TOKENS } from '../../command/constants/injection-tokens';
     },
     AuthUserRepository,
     {
-      provide: 'PasswordHasher',
+      provide: INJECTION_TOKENS.PasswordHasher,
       useClass: BcryptPasswordHasher,
     },
     BcryptPasswordHasher,

@@ -19,6 +19,20 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
+// SESSION_SECRETの検証（本番環境では必須）
+if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
+  throw new Error(
+    'SESSION_SECRET環境変数が設定されていません。本番環境では必須です。',
+  );
+}
+
+// CORS_ORIGINの検証（本番環境では必須）
+if (process.env.NODE_ENV === 'production' && !process.env.CORS_ORIGIN) {
+  throw new Error(
+    'CORS_ORIGIN環境変数が設定されていません。本番環境では必須です。',
+  );
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = app.get(CustomLoggerService);
@@ -32,6 +46,10 @@ async function bootstrap() {
   // connect-pg-simpleのセッションストアを初期化
   const PgSession = connectPgSimple(session);
 
+  // SESSION_SECRETの確定（本番環境では既にチェック済み）
+  const sessionSecret =
+    process.env.SESSION_SECRET || 'dev-secret-key-change-in-production';
+
   // express-sessionの設定
   app.use(
     session({
@@ -40,7 +58,7 @@ async function bootstrap() {
         tableName: 'session', // Prismaスキーマで定義したテーブル名
         createTableIfMissing: true, // テーブルが存在しない場合は自動作成
       }),
-      secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+      secret: sessionSecret,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -51,8 +69,15 @@ async function bootstrap() {
     }),
   );
 
+  // CORS設定（セキュリティのため、originを制限）
+  // 本番環境では既にCORS_ORIGINの検証済み
+  const corsOrigin =
+    process.env.CORS_ORIGIN ||
+    (process.env.NODE_ENV === 'production'
+      ? undefined // 本番環境では必須なので、ここには来ない
+      : 'http://localhost:3000'); // 開発環境用デフォルト
   app.enableCors({
-    origin: true,
+    origin: corsOrigin,
     credentials: true, // セッションクッキーを許可
   });
   app.useGlobalFilters(new GlobalExceptionFilter(logger));

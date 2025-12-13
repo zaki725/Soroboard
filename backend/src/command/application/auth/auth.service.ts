@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     @Inject(INJECTION_TOKENS.IAuthUserRepository)
     private readonly authUserRepository: IAuthUserRepository,
-    @Inject('PasswordHasher')
+    @Inject(INJECTION_TOKENS.PasswordHasher)
     private readonly passwordHasher: PasswordHasher,
   ) {}
 
