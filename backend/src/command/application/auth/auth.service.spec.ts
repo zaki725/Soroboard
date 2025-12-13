@@ -2,17 +2,24 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { INJECTION_TOKENS } from '../../constants/injection-tokens';
 import type { IAuthUserRepository } from '../../domain/auth/auth-user.repository.interface';
+import type { ITeacherRepository } from '../../domain/teacher/teacher.repository.interface';
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 import { AuthUserEntity } from '../../domain/auth/auth-user.entity';
+import { TeacherEntity } from '../../domain/teacher/teacher.entity';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
 
 describe('AuthService', () => {
   let service: AuthService;
   let repository: IAuthUserRepository;
+  let teacherRepository: ITeacherRepository;
   let passwordHasher: PasswordHasher;
 
   beforeEach(async () => {
     const mockRepository: IAuthUserRepository = {
+      findByEmail: jest.fn(),
+    };
+
+    const mockTeacherRepository: ITeacherRepository = {
       findByEmail: jest.fn(),
     };
 
@@ -28,6 +35,10 @@ describe('AuthService', () => {
           useValue: mockRepository,
         },
         {
+          provide: INJECTION_TOKENS.ITeacherRepository,
+          useValue: mockTeacherRepository,
+        },
+        {
           provide: INJECTION_TOKENS.PasswordHasher,
           useValue: mockPasswordHasher,
         },
@@ -37,6 +48,9 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
     repository = module.get<IAuthUserRepository>(
       INJECTION_TOKENS.IAuthUserRepository,
+    );
+    teacherRepository = module.get<ITeacherRepository>(
+      INJECTION_TOKENS.ITeacherRepository,
     );
     passwordHasher = module.get<PasswordHasher>(
       INJECTION_TOKENS.PasswordHasher,
@@ -52,9 +66,20 @@ describe('AuthService', () => {
         role: 'TEACHER',
       });
 
+      const teacher = TeacherEntity.create({
+        id: 'teacher-id',
+        email: 'test@example.com',
+        firstName: '太郎',
+        lastName: '山田',
+      });
+
       const findByEmailSpy = jest
         .spyOn(repository, 'findByEmail')
         .mockResolvedValue(authUser);
+
+      const findByEmailTeacherSpy = jest
+        .spyOn(teacherRepository, 'findByEmail')
+        .mockResolvedValue(teacher);
 
       const compareSpy = jest
         .spyOn(passwordHasher, 'compare')
@@ -69,8 +94,11 @@ describe('AuthService', () => {
         id: authUser.id,
         email: authUser.email,
         role: authUser.role,
+        firstName: teacher.firstName,
+        lastName: teacher.lastName,
       });
       expect(findByEmailSpy).toHaveBeenCalledWith('test@example.com');
+      expect(findByEmailTeacherSpy).toHaveBeenCalledWith('test@example.com');
       expect(compareSpy).toHaveBeenCalledWith(
         'password123',
         authUser.passwordHash,
