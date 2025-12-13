@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { seedUsers } from './seeds/user.seed';
+import { seedAuthUsers } from './seeds/auth-user.seed';
 import { seedRecruitYears } from './seeds/recruit-year.seed';
 import { seedJobCategories } from './seeds/job-category.seed';
 import { seedCompanies } from './seeds/company.seed';
@@ -64,6 +65,10 @@ async function main() {
 
     // Userを後で作成
     await seedUsers({ prisma });
+    console.log('');
+
+    // AuthUserを後で作成（Userに依存）
+    await seedAuthUsers({ prisma });
     console.log('');
 
     // Companyを後で作成（RecruitYearに依存）
