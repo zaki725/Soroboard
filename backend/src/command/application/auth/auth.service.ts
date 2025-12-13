@@ -1,9 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { IAuthUserRepository } from '../../domain/auth/auth-user.repository.interface';
+import type { ITeacherRepository } from '../../domain/teacher/teacher.repository.interface';
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 import type { LoginResponseDto } from '../../dto/auth/auth.dto';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
-import { INVALID_CREDENTIALS } from '../../../common/constants';
+import { InternalServerError } from '../../../common/errors/internal-server.error';
+import {
+  INVALID_CREDENTIALS,
+  USER_DATA_INTEGRITY_ERROR,
+} from '../../../common/constants';
 import { INJECTION_TOKENS } from '../../constants/injection-tokens';
 
 type LoginParams = {
@@ -24,6 +29,8 @@ export class AuthService {
   constructor(
     @Inject(INJECTION_TOKENS.IAuthUserRepository)
     private readonly authUserRepository: IAuthUserRepository,
+    @Inject(INJECTION_TOKENS.ITeacherRepository)
+    private readonly teacherRepository: ITeacherRepository,
     @Inject(INJECTION_TOKENS.PasswordHasher)
     private readonly passwordHasher: PasswordHasher,
   ) {}
@@ -40,15 +47,21 @@ export class AuthService {
       passwordHash,
     );
 
-    // ユーザーが存在しない、またはパスワードが無効な場合はエラー
     if (!authUser || !isPasswordValid) {
       throw new UnauthorizedError(INVALID_CREDENTIALS);
+    }
+
+    const teacher = await this.teacherRepository.findByEmail(params.email);
+    if (!teacher) {
+      throw new InternalServerError(USER_DATA_INTEGRITY_ERROR);
     }
 
     return {
       id: authUser.id,
       email: authUser.email,
       role: authUser.role,
+      firstName: teacher.firstName,
+      lastName: teacher.lastName,
     };
   }
 }
