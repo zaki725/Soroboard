@@ -3,7 +3,7 @@ import type { IAuthUserRepository } from '../../domain/auth/auth-user.repository
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 import type { LoginResponseDto } from '../../dto/auth/auth.dto';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
-import { getInvalidCredentials } from '../../../common/constants';
+import { INVALID_CREDENTIALS } from '../../../common/constants';
 import { INJECTION_TOKENS } from '../../constants/injection-tokens';
 
 type LoginParams = {
@@ -24,7 +24,7 @@ export class AuthService {
     const authUser = await this.authUserRepository.findByEmail(params.email);
 
     if (!authUser) {
-      throw new UnauthorizedError(getInvalidCredentials(params.email));
+      throw new UnauthorizedError(INVALID_CREDENTIALS);
     }
 
     const isPasswordValid = await authUser.verifyPassword(
@@ -33,7 +33,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedError(getInvalidCredentials(params.email));
+      throw new UnauthorizedError(INVALID_CREDENTIALS);
     }
 
     return {

@@ -3,10 +3,9 @@
  */
 
 /**
- * 認証失敗時のエラーメッセージを生成する関数
- * @param email メールアドレス
- * @returns エラーメッセージ（例: 'メールアドレスまたはパスワードが正しくありません - email: user@example.com'）
+ * 認証失敗時のエラーメッセージ
+ * セキュリティ上の理由により、メールアドレスは含めない
  */
-export const getInvalidCredentials = (email: string): string =>
-  `メールアドレスまたはパスワードが正しくありません - email: ${email}`;
+export const INVALID_CREDENTIALS =
+  'メールアドレスまたはパスワードが正しくありません';
 
