@@ -10,3 +10,4 @@ export * from './not-found-error';
 export * from './system-error';
 export * from './session';
 export * from './auth-error';
+export * from './auth';

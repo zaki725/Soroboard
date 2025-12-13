@@ -61,7 +61,7 @@ async function bootstrap() {
 
   // クロスオリジン対応のためsameSite: 'none'で固定
   // 開発環境ではhttp://localhostを使用するためsecure: falseを許可
-  const sameSite: 'none' = 'none';
+  const sameSite = 'none' as const;
 
   // express-sessionの設定
   app.use(
@@ -103,11 +103,15 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   // アプリケーション終了時にPoolを閉じる
-  process.on('SIGTERM', async () => {
-    await pool.end();
+  process.on('SIGTERM', () => {
+    pool.end().catch((error) => {
+      process.stderr.write(`Error closing pool: ${error}\n`);
+    });
   });
-  process.on('SIGINT', async () => {
-    await pool.end();
+  process.on('SIGINT', () => {
+    pool.end().catch((error) => {
+      process.stderr.write(`Error closing pool: ${error}\n`);
+    });
   });
 
   // Swagger設定

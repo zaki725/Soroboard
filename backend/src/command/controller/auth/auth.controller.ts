@@ -7,6 +7,7 @@ import type {
 } from '../../dto/auth/auth.dto';
 import { loginRequestSchema } from '../../dto/auth/auth.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
+import { LOGIN_SUCCESS } from '../../../common/constants';
 
 type RequestWithSession = Request & {
   session: {
@@ -38,7 +39,7 @@ export class AuthController {
     req.session.user = user;
 
     return {
-      message: 'ログインに成功しました',
+      message: LOGIN_SUCCESS,
       user: {
         id: user.id,
         email: user.email,
