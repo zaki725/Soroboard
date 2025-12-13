@@ -13,6 +13,15 @@ export type LoginResponseDto = {
   role: AuthUserRole;
 };
 
+export type LoginSuccessResponseDto = {
+  message: string;
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+};
+
 export const loginRequestSchema = z.object({
   email: z.string().email(INVALID.EMAIL_FORMAT),
   password: z.string().min(1, REQUIRED_FIELD(FIELD_NAME.PASSWORD)),

@@ -527,7 +527,8 @@ model SearchCondition {
 /// ログイン用アカウント
 model AuthUser {
   id           String       @id @default(ulid())
-  email        String       @unique
+  email        String
+  // 注意: emailのユニーク制約は部分インデックス（WHERE deleted_at IS NULL）としてマイグレーションファイルで定義
   passwordHash String       @map("password_hash")
   role         AuthUserRole @default(TEACHER)
 

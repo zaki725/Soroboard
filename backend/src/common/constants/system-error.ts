@@ -4,3 +4,7 @@
 
 export const INTERNAL_SERVER_ERROR = 'システムエラーが発生しました';
 export const VALIDATION_ERROR = 'バリデーションエラー';
+export const SESSION_SECRET_REQUIRED =
+  'SESSION_SECRET環境変数が設定されていません。';
+export const CORS_ORIGIN_REQUIRED =
+  'CORS_ORIGIN環境変数が設定されていません。本番環境では必須です。';

@@ -8,29 +8,35 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import { Pool } from 'pg';
-import { SESSION_MAX_AGE_MS } from './common/constants';
+import {
+  SESSION_MAX_AGE_MS,
+  SESSION_SECRET_REQUIRED,
+  CORS_ORIGIN_REQUIRED,
+} from './common/constants';
+import { InternalServerError } from './common/errors/internal-server.error';
 
 // DATABASE_URLが未設定の場合はデフォルト値を設定
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL =
     'postgresql://postgres:postgres@localhost:5433/app?schema=public';
-  console.log(
-    `DATABASE_URL環境変数を設定しました: ${process.env.DATABASE_URL}`,
-  );
 }
 
-// SESSION_SECRETの検証（本番環境では必須）
-if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
-  throw new Error(
-    'SESSION_SECRET環境変数が設定されていません。本番環境では必須です。',
-  );
+// SESSION_SECRETの検証（すべての環境で必須）
+if (!process.env.SESSION_SECRET) {
+  throw new InternalServerError(SESSION_SECRET_REQUIRED);
 }
 
 // CORS_ORIGINの検証（本番環境では必須）
 if (process.env.NODE_ENV === 'production' && !process.env.CORS_ORIGIN) {
-  throw new Error(
-    'CORS_ORIGIN環境変数が設定されていません。本番環境では必須です。',
-  );
+  throw new InternalServerError(CORS_ORIGIN_REQUIRED);
+}
+
+/**
+ * DATABASE_URLからschemaパラメータを削除
+ * pgのPoolはschemaパラメータを接続オプションとして解釈するため、Prisma用のパラメータを削除する必要がある
+ */
+function removeSchemaFromConnectionString(connectionString: string): string {
+  return connectionString.replace(/\?schema=[^&]*/, '');
 }
 
 async function bootstrap() {
@@ -39,16 +45,23 @@ async function bootstrap() {
   const traceService = app.get(TraceService);
 
   // PostgreSQL接続プールの作成（セッションストア用）
+  // schemaパラメータを削除（pgのPoolはPrisma用のパラメータを理解しない）
+  const poolConnectionString = removeSchemaFromConnectionString(
+    process.env.DATABASE_URL || '',
+  );
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: poolConnectionString,
   });
 
   // connect-pg-simpleのセッションストアを初期化
   const PgSession = connectPgSimple(session);
 
-  // SESSION_SECRETの確定（本番環境では既にチェック済み）
-  const sessionSecret =
-    process.env.SESSION_SECRET || 'dev-secret-key-change-in-production';
+  // SESSION_SECRETの確定（既にチェック済み）
+  const sessionSecret = process.env.SESSION_SECRET!;
+
+  // クロスオリジン対応のためsameSite: 'none'で固定
+  // 開発環境ではhttp://localhostを使用するためsecure: falseを許可
+  const sameSite: 'none' = 'none';
 
   // express-sessionの設定
   app.use(
@@ -56,15 +69,18 @@ async function bootstrap() {
       store: new PgSession({
         pool: pool,
         tableName: 'session', // Prismaスキーマで定義したテーブル名
-        createTableIfMissing: true, // テーブルが存在しない場合は自動作成
+        createTableIfMissing: false, // Prismaマイグレーションで管理するためfalse
       }),
       secret: sessionSecret,
       resave: false,
       saveUninitialized: false,
       cookie: {
+        // 開発環境ではhttp://localhostを使用するためsecure: false
+        // 本番環境ではsecure: true（sameSite: 'none'の要件）
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
         maxAge: SESSION_MAX_AGE_MS,
+        sameSite: sameSite,
       },
     }),
   );
@@ -82,6 +98,17 @@ async function bootstrap() {
   });
   app.useGlobalFilters(new GlobalExceptionFilter(logger));
   app.useGlobalInterceptors(new LoggingInterceptor(logger, traceService));
+
+  // シャットダウンフックを有効化（SIGTERM/SIGINTで正常終了）
+  app.enableShutdownHooks();
+
+  // アプリケーション終了時にPoolを閉じる
+  process.on('SIGTERM', async () => {
+    await pool.end();
+  });
+  process.on('SIGINT', async () => {
+    await pool.end();
+  });
 
   // Swagger設定
   const config = new DocumentBuilder()
@@ -102,6 +129,7 @@ async function bootstrap() {
   logger.log(`Swagger UI: http://localhost:${port}/api`, 'Bootstrap');
 }
 bootstrap().catch((error) => {
-  console.error('Error starting server:', error);
+  // 起動前のエラーなのでloggerは使用できない
+  process.stderr.write(`Error starting server: ${error}\n`);
   process.exit(1);
 });

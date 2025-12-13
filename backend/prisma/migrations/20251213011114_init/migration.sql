@@ -385,10 +385,10 @@ CREATE UNIQUE INDEX "locations_name_key" ON "locations"("name");
 CREATE UNIQUE INDEX "search_conditions_form_type_recruit_year_id_name_key" ON "search_conditions"("form_type", "recruit_year_id", "name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "auth_users_email_key" ON "auth_users"("email");
-
--- CreateIndex
 CREATE INDEX "session_expire_idx" ON "session"("expire");
+
+-- CreateIndex (部分ユニークインデックス: ソフトデリートされたレコードを除外)
+CREATE UNIQUE INDEX "auth_users_email_key" ON "auth_users"("email") WHERE "deleted_at" IS NULL;
 
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_recruit_year_id_fkey" FOREIGN KEY ("recruit_year_id") REFERENCES "recruit_years"("recruit_year") ON DELETE CASCADE ON UPDATE CASCADE;

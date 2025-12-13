@@ -1,7 +1,10 @@
 import { Controller, Post, Body, Req, HttpCode, HttpStatus } from '@nestjs/common';
 import type { Request } from 'express';
 import { AuthService } from '../../application/auth/auth.service';
-import type { LoginRequestDto } from '../../dto/auth/auth.dto';
+import type {
+  LoginRequestDto,
+  LoginSuccessResponseDto,
+} from '../../dto/auth/auth.dto';
 import { loginRequestSchema } from '../../dto/auth/auth.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
 
@@ -25,14 +28,7 @@ export class AuthController {
   async login(
     @Body(new ZodValidationPipe(loginRequestSchema)) dto: LoginRequestDto,
     @Req() req: RequestWithSession,
-  ): Promise<{
-    message: string;
-    user: {
-      id: string;
-      email: string;
-      role: string;
-    };
-  }> {
+  ): Promise<LoginSuccessResponseDto> {
     const user = await this.authService.login({
       email: dto.email,
       password: dto.password,

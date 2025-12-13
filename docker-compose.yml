@@ -20,6 +20,7 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-app}?schema=public
       NODE_ENV: development
+      SESSION_SECRET: ${SESSION_SECRET:-dev-session-secret-change-in-production}
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
     ports:
