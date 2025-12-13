@@ -6,5 +6,6 @@
 export const FIELD_NAME = {
   SCHOOL_ID: '塾ID',
   TEACHER_ID: '先生ID',
+  PASSWORD: 'パスワード',
 } as const;
 
