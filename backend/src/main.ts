@@ -36,7 +36,9 @@ if (process.env.NODE_ENV === 'production' && !process.env.CORS_ORIGIN) {
  * pgのPoolはschemaパラメータを接続オプションとして解釈するため、Prisma用のパラメータを削除する必要がある
  */
 function removeSchemaFromConnectionString(connectionString: string): string {
-  return connectionString.replace(/\?schema=[^&]*/, '');
+  const url = new URL(connectionString);
+  url.searchParams.delete('schema');
+  return url.toString();
 }
 
 async function bootstrap() {
