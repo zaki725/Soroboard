@@ -19,7 +19,7 @@ type LoginResponse = {
 
 export const useLogin = () => {
   const router = useRouter();
-  const { setUser } = useUser();
+  const { mutate } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = useCallback(
@@ -41,14 +41,16 @@ export const useLogin = () => {
           throw new Error(errorMessages.loginFailed);
         }
 
-        // UserContextを更新
+        // UserContextを更新（SWRのmutateを使用）
         const user: User = {
           id: response.id,
           name: `${response.lastName} ${response.firstName}`,
           email: response.email,
           role: response.role as User['role'],
         };
-        setUser(user);
+
+        // SWRのキャッシュを更新
+        await mutate(user);
 
         router.push('/');
       } catch (err) {
@@ -63,7 +65,7 @@ export const useLogin = () => {
         setIsLoading(false);
       }
     },
-    [router, setUser],
+    [router, mutate],
   );
 
   return {
