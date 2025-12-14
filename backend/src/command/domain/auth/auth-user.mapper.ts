@@ -32,11 +32,12 @@ export class AuthUserMapper {
         return 'TEACHER';
       case 'ADMIN':
         return 'ADMIN';
-      default:
+      default: {
         // すべてのケースを網羅していない場合、コンパイル時にエラーを検出
-        const _: never = role;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _exhaustiveCheck: never = role;
         throw new InternalServerError(UNSUPPORTED_AUTH_USER_ROLE(role));
+      }
     }
   }
 }
-
