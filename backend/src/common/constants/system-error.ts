@@ -12,3 +12,5 @@ export const DATABASE_URL_REQUIRED =
   'DATABASE_URL環境変数が設定されていません。本番環境では必須です。';
 export const USER_DATA_INTEGRITY_ERROR =
   'ユーザー情報の取得に失敗しました。データの整合性に問題があります。';
+export const UNSUPPORTED_AUTH_USER_ROLE = (role: string): string =>
+  `未対応のAuthUserRole: ${role}`;

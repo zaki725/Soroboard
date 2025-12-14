@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { AuthUserRole } from '@prisma/client';
+import type { AuthUserRole } from '../../domain/auth/auth-user-role';
 import { REQUIRED_FIELD, INVALID, FIELD_NAME } from '../../../common/constants';
 
 export type LoginRequestDto = {

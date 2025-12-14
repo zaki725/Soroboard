@@ -3,6 +3,10 @@ import type { IAuthUserRepository } from '../../domain/auth/auth-user.repository
 import type { ITeacherRepository } from '../../domain/teacher/teacher.repository.interface';
 import type { PasswordHasher } from '../../domain/auth/password-hasher.interface';
 import type { LoginResponseDto } from '../../dto/auth/auth.dto';
+import { ADMIN_DISPLAY_NAME } from '../../domain/auth/auth.constants';
+import { AuthUserRole } from '../../domain/auth/auth-user-role';
+import type { TeacherEntity } from '../../domain/teacher/teacher.entity';
+import type { AuthUserEntity } from '../../domain/auth/auth-user.entity';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
 import { InternalServerError } from '../../../common/errors/internal-server.error';
 import {
@@ -36,6 +40,19 @@ export class AuthService {
   ) {}
 
   async login(params: LoginParams): Promise<LoginResponseDto> {
+    // 1. 認証（ユーザー存在確認 & パスワード検証）
+    const authUser = await this.verifyCredentials(params);
+
+    // 2. プロフィール情報の取得
+    const teacher = await this.getTeacherProfile(authUser);
+
+    // 3. レスポンスの生成
+    return this.buildLoginResponse(authUser, teacher);
+  }
+
+  private async verifyCredentials(
+    params: LoginParams,
+  ): Promise<AuthUserEntity> {
     const authUser = await this.authUserRepository.findByEmail(params.email);
 
     // タイミング攻撃対策: ユーザーが見つからない場合でも、
@@ -51,7 +68,48 @@ export class AuthService {
       throw new UnauthorizedError(INVALID_CREDENTIALS);
     }
 
-    const teacher = await this.teacherRepository.findByEmail(params.email);
+    return authUser;
+  }
+
+  /**
+   * プロフィール情報を取得
+   * ADMIN権限の場合はnull、TEACHER権限の場合はTeacher情報を取得
+   * 整合性を保証：TEACHER権限でTeacherが見つからない場合はエラーを投げる
+   */
+  private async getTeacherProfile(
+    authUser: AuthUserEntity,
+  ): Promise<TeacherEntity | null> {
+    if (authUser.role !== AuthUserRole.TEACHER) {
+      return null;
+    }
+
+    const teacher = await this.teacherRepository.findByAuthUserId(authUser.id);
+    if (!teacher) {
+      throw new InternalServerError(USER_DATA_INTEGRITY_ERROR);
+    }
+
+    return teacher;
+  }
+
+  /**
+   * ログインレスポンスを生成
+   * ADMIN権限の場合は固定値、TEACHER権限の場合はTeacher情報から取得
+   */
+  private buildLoginResponse(
+    authUser: AuthUserEntity,
+    teacher: TeacherEntity | null,
+  ): LoginResponseDto {
+    if (authUser.role === AuthUserRole.ADMIN) {
+      return {
+        id: authUser.id,
+        email: authUser.email,
+        role: authUser.role,
+        firstName: ADMIN_DISPLAY_NAME.firstName,
+        lastName: ADMIN_DISPLAY_NAME.lastName,
+      };
+    }
+
+    // TEACHER権限の場合はteacherが必須（getTeacherProfileで保証済み）
     if (!teacher) {
       throw new InternalServerError(USER_DATA_INTEGRITY_ERROR);
     }
