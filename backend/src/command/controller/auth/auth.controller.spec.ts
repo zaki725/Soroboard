@@ -31,6 +31,29 @@ if (!process.env.SESSION_SECRET) {
 const TEST_PASSWORD_HASH =
   '$2b$04$8R1Q2A4kJ/sSm.mkQwYDK.mZTGFLxyqbTO3uN4flOi.jFfsjVt6PW';
 
+// テスト用のSchoolとTeacherを作成するヘルパー関数
+async function createTestSchoolAndTeacher(prisma: PrismaService) {
+  const school = await prisma.school.create({
+    data: {
+      name: 'テスト学校',
+      createdBy: 'system',
+      updatedBy: 'system',
+    },
+  });
+
+  await prisma.teacher.create({
+    data: {
+      email: 'test@example.com',
+      roleInSchool: TeacherRole.STAFF,
+      firstName: '太郎',
+      lastName: '山田',
+      schoolId: school.id,
+      createdBy: 'system',
+      updatedBy: 'system',
+    },
+  });
+}
+
 describe('AuthController (Command) (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
@@ -98,27 +121,7 @@ describe('AuthController (Command) (e2e)', () => {
     it('正常系: 正しい認証情報でログイン成功', async () => {
       const password = 'password123';
 
-      // Schoolを作成
-      const school = await prisma.school.create({
-        data: {
-          name: 'テスト学校',
-          createdBy: 'system',
-          updatedBy: 'system',
-        },
-      });
-
-      // Teacherを作成
-      await prisma.teacher.create({
-        data: {
-          email: 'test@example.com',
-          roleInSchool: TeacherRole.STAFF,
-          firstName: '太郎',
-          lastName: '山田',
-          schoolId: school.id,
-          createdBy: 'system',
-          updatedBy: 'system',
-        },
-      });
+      await createTestSchoolAndTeacher(prisma);
 
       const authUser = await prisma.authUser.create({
         data: {
@@ -150,27 +153,7 @@ describe('AuthController (Command) (e2e)', () => {
     it('正常系: ログイン成功時にセッションCookieが設定される', async () => {
       const password = 'password123';
 
-      // Schoolを作成
-      const school = await prisma.school.create({
-        data: {
-          name: 'テスト学校',
-          createdBy: 'system',
-          updatedBy: 'system',
-        },
-      });
-
-      // Teacherを作成
-      await prisma.teacher.create({
-        data: {
-          email: 'test@example.com',
-          roleInSchool: TeacherRole.STAFF,
-          firstName: '太郎',
-          lastName: '山田',
-          schoolId: school.id,
-          createdBy: 'system',
-          updatedBy: 'system',
-        },
-      });
+      await createTestSchoolAndTeacher(prisma);
 
       await prisma.authUser.create({
         data: {
@@ -221,27 +204,7 @@ describe('AuthController (Command) (e2e)', () => {
     });
 
     it('異常系: パスワードが間違っている場合に401エラーが返る', async () => {
-      // Schoolを作成
-      const school = await prisma.school.create({
-        data: {
-          name: 'テスト学校',
-          createdBy: 'system',
-          updatedBy: 'system',
-        },
-      });
-
-      // Teacherを作成
-      await prisma.teacher.create({
-        data: {
-          email: 'test@example.com',
-          roleInSchool: TeacherRole.STAFF,
-          firstName: '太郎',
-          lastName: '山田',
-          schoolId: school.id,
-          createdBy: 'system',
-          updatedBy: 'system',
-        },
-      });
+      await createTestSchoolAndTeacher(prisma);
 
       await prisma.authUser.create({
         data: {
@@ -292,4 +255,3 @@ describe('AuthController (Command) (e2e)', () => {
     });
   });
 });
-

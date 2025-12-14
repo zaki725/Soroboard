@@ -37,6 +37,10 @@ export const useLogin = () => {
           },
         });
 
+        if (!response) {
+          throw new Error(errorMessages.loginFailed);
+        }
+
         // UserContextを更新
         const user: User = {
           id: response.id,
@@ -54,7 +58,7 @@ export const useLogin = () => {
           (message) => toast.error(message),
           errorMessages.loginFailed,
         );
-        throw err;
+        return;
       } finally {
         setIsLoading(false);
       }
