@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
@@ -15,6 +16,9 @@ import {
   DATABASE_URL_REQUIRED,
 } from './common/constants';
 import { InternalServerError } from './common/errors/internal-server.error';
+
+// .envファイルを読み込む
+config();
 
 // DATABASE_URLの検証（本番環境では必須）
 if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {

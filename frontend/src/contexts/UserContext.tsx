@@ -11,17 +11,9 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// スタブデータ: 実際のAPI呼び出しに置き換える
-const STUB_USER: User = {
-  id: '1',
-  name: '山田太郎',
-  email: 'yamada@example.com',
-  role: 'master',
-  // imageUrl: "/rcdx_logo.png",
-};
-
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(STUB_USER);
+  // ログイン前はnull、ログイン後はログインAPIから取得したユーザー情報を設定
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading] = useState(false);
 
   const value = useMemo(

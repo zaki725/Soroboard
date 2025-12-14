@@ -11,15 +11,8 @@ export type LoginResponseDto = {
   id: string;
   email: string;
   role: AuthUserRole;
-};
-
-export type LoginSuccessResponseDto = {
-  message: string;
-  user: {
-    id: string;
-    email: string;
-    role: string;
-  };
+  firstName: string;
+  lastName: string;
 };
 
 export const loginRequestSchema = z.object({

@@ -1,4 +1,6 @@
 export const errorMessages = {
+  // 認証関連
+  loginFailed: 'ログインに失敗しました',
   // ユーザー関連
   userNotFound: 'ユーザーが見つかりません',
   userFetchFailed: 'ユーザー情報の取得に失敗しました',

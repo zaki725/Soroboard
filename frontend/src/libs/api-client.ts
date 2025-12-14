@@ -47,6 +47,7 @@ export const apiClient = async <T>(
       ...headers,
     },
     cache,
+    credentials: 'include', // セッションCookieを送信するために必要
   };
 
   if (body) {
