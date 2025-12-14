@@ -1,19 +1,8 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-
-export default async function LoginLayout({
+export default function LoginLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // サーバー側でセッションCookieをチェック
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('connect.sid');
-
-  // セッションがある場合はダッシュボードにリダイレクト
-  if (sessionCookie) {
-    redirect('/');
-  }
-
+  // 認証チェックはダッシュボード側（page.tsx）で行う
   return <>{children}</>;
 }
