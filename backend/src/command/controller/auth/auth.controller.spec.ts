@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -10,6 +11,9 @@ import { PrismaModule } from '../../../prisma/prisma.module';
 import { LoggerModule } from '../../../config/logger.module';
 import { PrismaService } from '../../../prisma.service';
 import { SESSION_MAX_AGE_MS } from '../../../common/constants';
+
+// .envファイルから環境変数を読み込む
+config();
 
 // DATABASE_URLが未設定の場合はデフォルト値を設定
 if (!process.env.DATABASE_URL) {

@@ -67,16 +67,16 @@ async function main() {
     await seedUsers({ prisma });
     console.log('');
 
-    // AuthUserを後で作成（Userに依存）
-    await seedAuthUsers({ prisma });
-    console.log('');
-
     // Companyを後で作成（RecruitYearに依存）
     await seedCompanies({ prisma });
     console.log('');
 
     // Teacherを後で作成（Schoolに依存）
     await seedTeachers({ prisma });
+    console.log('');
+
+    // AuthUserを後で作成（Teacherに依存）
+    await seedAuthUsers({ prisma });
     console.log('');
 
     console.log('すべてのシードが正常に完了しました！');
