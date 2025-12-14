@@ -1,17 +1,12 @@
 'use client';
 
 import { useForm, FormProvider } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { TextField } from '@/components/form';
 import { Button, PageContainer, Title } from '@/components/ui';
-import { useUser } from '@/contexts/UserContext';
 import { useLogin } from './hooks/useLogin';
 import type { LoginFormData } from './types/login-form';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { user } = useUser();
   const { handleSubmit: handleLoginSubmit, isLoading } = useLogin();
 
   const methods = useForm<LoginFormData>({
@@ -26,18 +21,6 @@ export default function LoginPage() {
   const onSubmit = methods.handleSubmit(async (data) => {
     await handleLoginSubmit(data, methods.setError);
   });
-
-  // ログイン済みの場合はダッシュボードにリダイレクト
-  useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user, router]);
-
-  // ログイン済みの場合は何も表示しない
-  if (user) {
-    return null;
-  }
 
   return (
     <PageContainer className="flex items-center justify-center">
