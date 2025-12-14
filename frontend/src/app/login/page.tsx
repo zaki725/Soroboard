@@ -14,18 +14,6 @@ export default function LoginPage() {
   const { user } = useUser();
   const { handleSubmit: handleLoginSubmit, isLoading } = useLogin();
 
-  // ログイン済みの場合はダッシュボードにリダイレクト
-  useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user, router]);
-
-  // ログイン済みの場合は何も表示しない
-  if (user) {
-    return null;
-  }
-
   const methods = useForm<LoginFormData>({
     defaultValues: {
       email: '',
@@ -38,6 +26,18 @@ export default function LoginPage() {
   const onSubmit = methods.handleSubmit(async (data) => {
     await handleLoginSubmit(data, methods.setError);
   });
+
+  // ログイン済みの場合はダッシュボードにリダイレクト
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  // ログイン済みの場合は何も表示しない
+  if (user) {
+    return null;
+  }
 
   return (
     <PageContainer className="flex items-center justify-center">
