@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Dashboard } from '@/features/dashboard/components/Dashboard';
 import { Loading } from '@/components/ui';
 
-export default function Home() {
+const Home = () => {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const { setItems } = useBreadcrumb();
@@ -31,4 +31,6 @@ export default function Home() {
   }
 
   return <Dashboard />;
-}
+};
+
+export default Home;
