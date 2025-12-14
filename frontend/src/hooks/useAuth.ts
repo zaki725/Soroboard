@@ -8,7 +8,7 @@ const roleHierarchy: Record<UserRole, number> = {
 };
 
 export const useAuth = () => {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
 
   const hasRole = (requiredRole: UserRole): boolean => {
     if (!user) return false;
@@ -21,6 +21,7 @@ export const useAuth = () => {
 
   return {
     user,
+    isLoading,
     hasRole,
     isMaster,
     isAdmin,

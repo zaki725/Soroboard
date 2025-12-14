@@ -1,36 +1,31 @@
 'use client';
 
-import { createContext, useContext, useState, useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
+import { useSWRData } from '@/libs/swr-client';
 import type { User } from '@/types/user';
 
 type UserContextType = {
   user: User | null;
-  setUser: (user: User | null) => void;
   isLoading: boolean;
+  mutate: (user?: User) => Promise<User | undefined>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// スタブデータ: 実際のAPI呼び出しに置き換える
-const STUB_USER: User = {
-  id: '1',
-  name: '山田太郎',
-  email: 'yamada@example.com',
-  role: 'master',
-  // imageUrl: "/rcdx_logo.png",
-};
-
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(STUB_USER);
-  const [isLoading] = useState(false);
+  // TODO: /auth/meエンドポイント実装後に有効化
+  // const { data: user, isLoading, mutate } = useSWRData<User>('/auth/me');
+
+  // 一時的な実装：エンドポイント実装までnullを返す（SWRのkeyをnullにすることで呼び出さない）
+  const { data: user, isLoading, mutate } = useSWRData<User>(null);
 
   const value = useMemo(
     () => ({
-      user,
-      setUser,
+      user: user ?? null,
       isLoading,
+      mutate,
     }),
-    [user, isLoading],
+    [user, isLoading, mutate],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

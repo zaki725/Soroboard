@@ -1,5 +1,11 @@
-import { AuthUser as PrismaAuthUser } from '@prisma/client';
+import {
+  AuthUser as PrismaAuthUser,
+  AuthUserRole as PrismaAuthUserRole,
+} from '@prisma/client';
 import { AuthUserEntity } from './auth-user.entity';
+import type { AuthUserRole } from './auth-user-role';
+import { InternalServerError } from '../../../common/errors/internal-server.error';
+import { UNSUPPORTED_AUTH_USER_ROLE } from '../../../common/constants';
 
 /**
  * AuthUserエンティティとPrismaデータの変換を行うMapper
@@ -13,8 +19,25 @@ export class AuthUserMapper {
       id: raw.id,
       email: raw.email,
       passwordHash: raw.passwordHash,
-      role: raw.role,
+      role: this.toDomainRole(raw.role),
     });
   }
-}
 
+  /**
+   * PrismaのAuthUserRole → ドメインのAuthUserRole
+   */
+  private static toDomainRole(role: PrismaAuthUserRole): AuthUserRole {
+    switch (role) {
+      case 'TEACHER':
+        return 'TEACHER';
+      case 'ADMIN':
+        return 'ADMIN';
+      default: {
+        // すべてのケースを網羅していない場合、コンパイル時にエラーを検出
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _exhaustiveCheck: never = role;
+        throw new InternalServerError(UNSUPPORTED_AUTH_USER_ROLE(role));
+      }
+    }
+  }
+}

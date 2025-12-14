@@ -1,4 +1,4 @@
-import type { AuthUserRole } from '@prisma/client';
+import type { AuthUserRole } from './auth-user-role';
 
 type AuthUserProps = {
   id: string;
