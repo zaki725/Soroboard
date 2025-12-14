@@ -8,9 +8,9 @@ import { TeacherMapper } from '../../domain/teacher/teacher.mapper';
 export class TeacherRepository implements ITeacherRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByEmail(email: string): Promise<TeacherEntity | null> {
+  async findByAuthUserId(authUserId: string): Promise<TeacherEntity | null> {
     const teacherData = await this.prisma.teacher.findUnique({
-      where: { email },
+      where: { authUserId },
     });
 
     if (!teacherData) {

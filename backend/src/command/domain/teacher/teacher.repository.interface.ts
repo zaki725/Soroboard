@@ -1,6 +1,6 @@
 import { TeacherEntity } from './teacher.entity';
 
 export interface ITeacherRepository {
-  findByEmail(email: string): Promise<TeacherEntity | null>;
+  findByAuthUserId(authUserId: string): Promise<TeacherEntity | null>;
 }
 

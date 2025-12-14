@@ -20,7 +20,7 @@ describe('AuthService', () => {
     };
 
     const mockTeacherRepository: ITeacherRepository = {
-      findByEmail: jest.fn(),
+      findByAuthUserId: jest.fn(),
     };
 
     const mockPasswordHasher: PasswordHasher = {
@@ -77,8 +77,8 @@ describe('AuthService', () => {
         .spyOn(repository, 'findByEmail')
         .mockResolvedValue(authUser);
 
-      const findByEmailTeacherSpy = jest
-        .spyOn(teacherRepository, 'findByEmail')
+      const findByAuthUserIdTeacherSpy = jest
+        .spyOn(teacherRepository, 'findByAuthUserId')
         .mockResolvedValue(teacher);
 
       const compareSpy = jest
@@ -98,7 +98,7 @@ describe('AuthService', () => {
         lastName: teacher.lastName,
       });
       expect(findByEmailSpy).toHaveBeenCalledWith('test@example.com');
-      expect(findByEmailTeacherSpy).toHaveBeenCalledWith('test@example.com');
+      expect(findByAuthUserIdTeacherSpy).toHaveBeenCalledWith(authUser.id);
       expect(compareSpy).toHaveBeenCalledWith(
         'password123',
         authUser.passwordHash,
