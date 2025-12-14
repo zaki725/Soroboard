@@ -33,6 +33,8 @@ export class AuthUserMapper {
       case 'ADMIN':
         return 'ADMIN';
       default:
+        // すべてのケースを網羅していない場合、コンパイル時にエラーを検出
+        const _: never = role;
         throw new InternalServerError(UNSUPPORTED_AUTH_USER_ROLE(role));
     }
   }
