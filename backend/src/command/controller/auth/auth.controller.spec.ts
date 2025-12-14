@@ -32,7 +32,10 @@ const TEST_PASSWORD_HASH =
   '$2b$04$8R1Q2A4kJ/sSm.mkQwYDK.mZTGFLxyqbTO3uN4flOi.jFfsjVt6PW';
 
 // テスト用のSchoolとTeacherを作成するヘルパー関数
-async function createTestSchoolAndTeacher(prisma: PrismaService) {
+async function createTestSchoolAndTeacher(
+  prisma: PrismaService,
+  authUserId: string,
+) {
   const school = await prisma.school.create({
     data: {
       name: 'テスト学校',
@@ -48,6 +51,7 @@ async function createTestSchoolAndTeacher(prisma: PrismaService) {
       firstName: '太郎',
       lastName: '山田',
       schoolId: school.id,
+      authUserId: authUserId,
       createdBy: 'system',
       updatedBy: 'system',
     },
@@ -121,8 +125,6 @@ describe('AuthController (Command) (e2e)', () => {
     it('正常系: 正しい認証情報でログイン成功', async () => {
       const password = 'password123';
 
-      await createTestSchoolAndTeacher(prisma);
-
       const authUser = await prisma.authUser.create({
         data: {
           email: 'test@example.com',
@@ -132,6 +134,8 @@ describe('AuthController (Command) (e2e)', () => {
           updatedBy: 'system',
         },
       });
+
+      await createTestSchoolAndTeacher(prisma, authUser.id);
 
       const response = await request(app.getHttpServer())
         .post('/auth/login')
@@ -153,9 +157,7 @@ describe('AuthController (Command) (e2e)', () => {
     it('正常系: ログイン成功時にセッションCookieが設定される', async () => {
       const password = 'password123';
 
-      await createTestSchoolAndTeacher(prisma);
-
-      await prisma.authUser.create({
+      const authUser = await prisma.authUser.create({
         data: {
           email: 'test@example.com',
           passwordHash: TEST_PASSWORD_HASH,
@@ -164,6 +166,8 @@ describe('AuthController (Command) (e2e)', () => {
           updatedBy: 'system',
         },
       });
+
+      await createTestSchoolAndTeacher(prisma, authUser.id);
 
       const response = await request(app.getHttpServer())
         .post('/auth/login')
@@ -204,9 +208,7 @@ describe('AuthController (Command) (e2e)', () => {
     });
 
     it('異常系: パスワードが間違っている場合に401エラーが返る', async () => {
-      await createTestSchoolAndTeacher(prisma);
-
-      await prisma.authUser.create({
+      const authUser = await prisma.authUser.create({
         data: {
           email: 'test@example.com',
           passwordHash: TEST_PASSWORD_HASH,
@@ -215,6 +217,8 @@ describe('AuthController (Command) (e2e)', () => {
           updatedBy: 'system',
         },
       });
+
+      await createTestSchoolAndTeacher(prisma, authUser.id);
 
       const response = await request(app.getHttpServer())
         .post('/auth/login')
@@ -252,6 +256,36 @@ describe('AuthController (Command) (e2e)', () => {
         .expect(400);
 
       expect(response.body).toHaveProperty('statusCode', 400);
+    });
+
+    it('正常系: ADMIN権限のユーザーでログイン成功（固定値が返る）', async () => {
+      const password = 'password123';
+
+      const authUser = await prisma.authUser.create({
+        data: {
+          email: 'admin@example.com',
+          passwordHash: TEST_PASSWORD_HASH,
+          role: AuthUserRole.ADMIN,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: 'admin@example.com',
+          password: password,
+        })
+        .expect(200);
+
+      expect(response.body).toMatchObject({
+        id: authUser.id,
+        email: authUser.email,
+        role: authUser.role,
+        firstName: 'Soroboard',
+        lastName: '開発者',
+      });
     });
   });
 });
