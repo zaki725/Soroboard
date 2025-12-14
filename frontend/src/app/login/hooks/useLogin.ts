@@ -46,7 +46,6 @@ export const useLogin = () => {
         };
         setUser(user);
 
-        toast.success('ログインしました');
         router.push('/');
       } catch (err) {
         handleFormError(
