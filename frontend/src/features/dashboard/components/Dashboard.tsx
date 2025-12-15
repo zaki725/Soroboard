@@ -15,31 +15,23 @@ type CategorySection = {
 export const Dashboard = () => {
   const { hasRole } = useAuth();
 
-  const userLinks = navigationLinks.filter(
-    (link) => link.requiredRole === 'user' && hasRole(link.requiredRole),
+  const teacherLinks = navigationLinks.filter(
+    (link) => link.requiredRole === 'TEACHER' && hasRole(link.requiredRole),
   );
   const adminLinks = navigationLinks.filter(
-    (link) => link.requiredRole === 'admin' && hasRole(link.requiredRole),
-  );
-  const masterLinks = navigationLinks.filter(
-    (link) => link.requiredRole === 'master' && hasRole(link.requiredRole),
+    (link) => link.requiredRole === 'ADMIN' && hasRole(link.requiredRole),
   );
 
   const categorySections: CategorySection[] = [
     {
-      title: roleCategoryMap.user.title,
-      requiredRole: 'user' as UserRole,
-      links: userLinks,
+      title: roleCategoryMap.TEACHER.title,
+      requiredRole: 'TEACHER' as UserRole,
+      links: teacherLinks,
     },
     {
-      title: roleCategoryMap.admin.title,
-      requiredRole: 'admin' as UserRole,
+      title: roleCategoryMap.ADMIN.title,
+      requiredRole: 'ADMIN' as UserRole,
       links: adminLinks,
-    },
-    {
-      title: roleCategoryMap.master.title,
-      requiredRole: 'master' as UserRole,
-      links: masterLinks,
     },
   ].filter((section) => section.links.length > 0);
 

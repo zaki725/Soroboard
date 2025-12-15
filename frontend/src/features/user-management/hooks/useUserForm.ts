@@ -111,7 +111,7 @@ export const useUserForm = ({ userId }: UseUserFormParams) => {
           }
         : {
             email: '',
-            role: 'user',
+            role: 'TEACHER',
             firstName: '',
             lastName: '',
             gender: '',

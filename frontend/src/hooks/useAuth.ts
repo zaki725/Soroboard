@@ -2,9 +2,8 @@ import { useUser } from '@/contexts/UserContext';
 import type { UserRole } from '@/types/user';
 
 const roleHierarchy: Record<UserRole, number> = {
-  user: 1,
-  admin: 2,
-  master: 3,
+  TEACHER: 1,
+  ADMIN: 2,
 };
 
 export const useAuth = () => {
@@ -15,16 +14,14 @@ export const useAuth = () => {
     return roleHierarchy[user.role] >= roleHierarchy[requiredRole];
   };
 
-  const isMaster = (): boolean => hasRole('master');
-  const isAdmin = (): boolean => hasRole('admin');
-  const isUser = (): boolean => hasRole('user');
+  const isAdmin = (): boolean => hasRole('ADMIN');
+  const isTeacher = (): boolean => hasRole('TEACHER');
 
   return {
     user,
     isLoading,
     hasRole,
-    isMaster,
     isAdmin,
-    isUser,
+    isTeacher,
   };
 };

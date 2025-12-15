@@ -21,13 +21,11 @@ export const NavigationMenu = () => {
 
   // 表示する権限区分を決定（ユーザーの権限に応じて表示）
   const visibleRoles: UserRole[] = [];
-  const userLinks = getLinksForRole('user');
-  const adminLinks = getLinksForRole('admin');
-  const masterLinks = getLinksForRole('master');
+  const teacherLinks = getLinksForRole('TEACHER');
+  const adminLinks = getLinksForRole('ADMIN');
 
-  if (hasRole('user') && userLinks.length > 0) visibleRoles.push('user');
-  if (hasRole('admin') && adminLinks.length > 0) visibleRoles.push('admin');
-  if (hasRole('master') && masterLinks.length > 0) visibleRoles.push('master');
+  if (hasRole('TEACHER') && teacherLinks.length > 0) visibleRoles.push('TEACHER');
+  if (hasRole('ADMIN') && adminLinks.length > 0) visibleRoles.push('ADMIN');
 
   return (
     <nav className="flex items-center px-4">

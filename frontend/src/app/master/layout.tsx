@@ -10,15 +10,15 @@ export default function MasterLayout({
   readonly children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isMaster } = useAuth();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
-    if (!isMaster()) {
+    if (!isAdmin()) {
       router.push('/unauthorized');
     }
-  }, [isMaster, router]);
+  }, [isAdmin, router]);
 
-  if (!isMaster()) {
+  if (!isAdmin()) {
     return null;
   }
 

@@ -10,9 +10,9 @@ export const INTERVIEWER_CATEGORIES: InterviewerCategory[] = [
   '現場社員',
 ];
 
-// ユーザー権限
-export type UserRole = 'user' | 'admin' | 'master';
-export const USER_ROLES: UserRole[] = ['user', 'admin', 'master'];
+// ユーザー権限（バックエンドのAuthUserRoleと統一）
+export type UserRole = 'TEACHER' | 'ADMIN';
+export const USER_ROLES: UserRole[] = ['TEACHER', 'ADMIN'];
 
 // 性別
 export type Gender = 'male' | 'female' | 'other';

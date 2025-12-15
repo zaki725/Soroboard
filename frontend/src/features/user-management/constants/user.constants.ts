@@ -3,9 +3,8 @@ import type { SelectOption } from '@/components/ui';
 
 export const roleOptions: SelectOption[] = [
   { value: '', label: 'すべて' },
-  { value: 'user', label: 'ユーザー' },
-  { value: 'admin', label: '管理者' },
-  { value: 'master', label: 'マスター' },
+  { value: 'TEACHER', label: '先生' },
+  { value: 'ADMIN', label: '管理者' },
 ];
 
 export const genderOptions: SelectOption[] = [
@@ -16,9 +15,8 @@ export const genderOptions: SelectOption[] = [
 ];
 
 export const roleLabelMap: Record<UserRole, string> = {
-  user: 'ユーザー',
-  admin: '管理者',
-  master: 'マスター',
+  TEACHER: '先生',
+  ADMIN: '管理者',
 };
 
 export const genderLabelMap: Record<Gender, string> = {
