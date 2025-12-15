@@ -45,7 +45,7 @@ export const EventBasicInfoFormContent = ({
           <HelpTooltip
             message="ロケーションがプルダウンにない場合は"
             linkText="ロケーション管理"
-            linkHref="/master/event-location-management"
+            linkHref="/admin/event-location-management"
           />
         </div>
         <SelectField

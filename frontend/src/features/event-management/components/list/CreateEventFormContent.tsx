@@ -27,7 +27,7 @@ export const CreateEventFormContent = () => {
           <HelpTooltip
             message="イベントマスターがプルダウンにない場合は"
             linkText="イベントマスター管理"
-            linkHref="/master/event-master-management"
+            linkHref="/admin/event-master-management"
           />
         </div>
         <SelectField
@@ -63,7 +63,7 @@ export const CreateEventFormContent = () => {
           <HelpTooltip
             message="ロケーションがプルダウンにない場合は"
             linkText="ロケーション管理"
-            linkHref="/master/event-location-management"
+            linkHref="/admin/event-location-management"
           />
         </div>
         <SelectField

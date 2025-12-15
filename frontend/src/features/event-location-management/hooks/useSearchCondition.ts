@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSearchCondition as useSearchConditionBase } from '@/hooks/useSearchCondition';
 
 const FORM_TYPE = 'event-location';
-const CURRENT_PATH = '/master/event-location-management';
+const CURRENT_PATH = '/admin/event-location-management';
 
 const buildUrlParams = (searchParams: URLSearchParams): string => {
   const params = new URLSearchParams();

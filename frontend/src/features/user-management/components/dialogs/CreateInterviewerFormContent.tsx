@@ -57,7 +57,7 @@ export const CreateInterviewerFormContent = ({
           <HelpTooltip
             message="プルダウンにない場合は"
             linkText="マスター権限者でユーザー登録"
-            linkHref="/master/user-management"
+            linkHref="/admin/user-management"
           />
         </div>
         <SelectField

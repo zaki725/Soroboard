@@ -85,8 +85,8 @@ export const useUniversityList = () => {
 
       const queryString = urlParams.toString();
       const url = queryString
-        ? `/master/university-management?${queryString}`
-        : '/master/university-management';
+        ? `/admin/university-management?${queryString}`
+        : '/admin/university-management';
       router.push(url);
     },
     [router],
@@ -99,7 +99,7 @@ export const useUniversityList = () => {
 
   const handleReset = () => {
     // URLのみを変更し、状態はURLパラメータの変更検知から更新させる
-    router.push('/master/university-management');
+    router.push('/admin/university-management');
   };
 
   const currentSearchParams = getSearchParamsFromUrl();

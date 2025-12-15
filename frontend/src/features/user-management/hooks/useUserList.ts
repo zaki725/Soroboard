@@ -103,8 +103,8 @@ export const useUserList = () => {
 
       const queryString = urlParams.toString();
       const url = queryString
-        ? `/master/user-management?${queryString}`
-        : '/master/user-management';
+        ? `/admin/user-management?${queryString}`
+        : '/admin/user-management';
 
       // ページネーション時はreplace、検索時はpush
       if (useReplace) {
@@ -124,7 +124,7 @@ export const useUserList = () => {
 
   const handleReset = () => {
     // URLのみを変更し、状態はURLパラメータの変更検知から更新させる
-    router.push('/master/user-management');
+    router.push('/admin/user-management');
   };
 
   const handlePageChange = (newPage: number) => {

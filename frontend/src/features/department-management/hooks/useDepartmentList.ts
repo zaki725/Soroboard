@@ -75,8 +75,8 @@ export const useDepartmentList = () => {
 
       const queryString = urlParams.toString();
       const url = queryString
-        ? `/master/department-management?${queryString}`
-        : '/master/department-management';
+        ? `/admin/department-management?${queryString}`
+        : '/admin/department-management';
       router.push(url);
     },
     [router],
@@ -89,7 +89,7 @@ export const useDepartmentList = () => {
 
   const handleReset = () => {
     // URLのみを変更し、状態はURLパラメータの変更検知から更新させる
-    router.push('/master/department-management');
+    router.push('/admin/department-management');
   };
 
   const currentSearchParams = getSearchParamsFromUrl();

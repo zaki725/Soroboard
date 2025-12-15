@@ -124,7 +124,7 @@ export const CreateUserForm = ({ onSubmit, onCancel }: CreateUserFormProps) => {
                 <HelpTooltip
                   message="部署がプルダウンにない場合は"
                   linkText="登録"
-                  linkHref="/master/department-management"
+                  linkHref="/admin/department-management"
                 />
               </div>
               <SelectField

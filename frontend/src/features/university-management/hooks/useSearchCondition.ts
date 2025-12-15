@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSearchCondition as useSearchConditionBase } from '@/hooks/useSearchCondition';
 
 const FORM_TYPE = 'university';
-const CURRENT_PATH = '/master/university-management';
+const CURRENT_PATH = '/admin/university-management';
 
 const buildUrlParams = (searchParams: URLSearchParams): string => {
   const params = new URLSearchParams();

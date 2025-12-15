@@ -15,7 +15,7 @@ export const getTableColumns = ({ startEdit, startDelete }: ColumnProps) => {
       label: '大学名',
       render: (_value: unknown, row: UniversityResponseDto) => (
         <Link
-          href={`/master/university-management/${row.id}`}
+          href={`/admin/university-management/${row.id}`}
           className="text-blue-600 hover:underline"
         >
           {row.name}
@@ -39,7 +39,7 @@ export const getTableColumns = ({ startEdit, startDelete }: ColumnProps) => {
       label: '操作',
       render: (_value: unknown, row: UniversityResponseDto) => (
         <div className="flex items-center gap-2">
-          <Link href={`/master/university-management/${row.id}`}>
+          <Link href={`/admin/university-management/${row.id}`}>
             <Button size="sm" variant="outline" icon={<ViewIcon />}>
               詳細
             </Button>
