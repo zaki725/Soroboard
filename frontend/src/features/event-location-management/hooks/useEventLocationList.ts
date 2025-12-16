@@ -76,8 +76,8 @@ export const useEventLocationList = () => {
 
       const queryString = urlParams.toString();
       const url = queryString
-        ? `/master/event-location-management?${queryString}`
-        : '/master/event-location-management';
+        ? `/admin/event-location-management?${queryString}`
+        : '/admin/event-location-management';
       router.push(url);
     },
     [router],
@@ -90,7 +90,7 @@ export const useEventLocationList = () => {
 
   const handleReset = () => {
     // URLのみを変更し、状態はURLパラメータの変更検知から更新させる
-    router.push('/master/event-location-management');
+    router.push('/admin/event-location-management');
   };
 
   const currentSearchParams = getSearchParamsFromUrl();

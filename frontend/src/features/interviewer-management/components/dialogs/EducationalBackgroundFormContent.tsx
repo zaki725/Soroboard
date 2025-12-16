@@ -50,7 +50,7 @@ export const EducationalBackgroundFormContent = ({
           <HelpTooltip
             message="プルダウンにない場合は"
             linkText="マスター権限者で大学登録"
-            linkHref="/master/university-management"
+            linkHref="/admin/university-management"
           />
         </div>
         <SelectField

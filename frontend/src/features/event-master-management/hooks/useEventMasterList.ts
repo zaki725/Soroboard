@@ -79,13 +79,13 @@ export const useEventMasterList = () => {
         }
       }
 
-      router.push(`/master/event-master-management?${params.toString()}`);
+      router.push(`/admin/event-master-management?${params.toString()}`);
     },
     [router],
   );
 
   const handleReset = useCallback(() => {
-    router.push('/master/event-master-management');
+    router.push('/admin/event-master-management');
   }, [router]);
 
   // refetchの代わりにmutateを返す（後方互換性のため）

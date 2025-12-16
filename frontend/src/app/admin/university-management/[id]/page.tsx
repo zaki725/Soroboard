@@ -15,7 +15,7 @@ export default function UniversityDetailPage() {
   useEffect(() => {
     setItems([
       { label: 'ホーム', href: '/' },
-      { label: '大学管理', href: '/master/university-management' },
+      { label: '大学管理', href: '/admin/university-management' },
       { label: '詳細' },
     ]);
   }, [setItems]);

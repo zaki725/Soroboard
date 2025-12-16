@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { navigationLinks, roleCategoryMap } from '@/constants/navigation-links';
+import { USER_ROLES } from '@/constants/enums';
 import type { UserRole } from '@/types/user';
 
 export const NavigationMenu = () => {
@@ -20,14 +21,10 @@ export const NavigationMenu = () => {
   };
 
   // 表示する権限区分を決定（ユーザーの権限に応じて表示）
-  const visibleRoles: UserRole[] = [];
-  const userLinks = getLinksForRole('user');
-  const adminLinks = getLinksForRole('admin');
-  const masterLinks = getLinksForRole('master');
-
-  if (hasRole('user') && userLinks.length > 0) visibleRoles.push('user');
-  if (hasRole('admin') && adminLinks.length > 0) visibleRoles.push('admin');
-  if (hasRole('master') && masterLinks.length > 0) visibleRoles.push('master');
+  const visibleRoles: UserRole[] = USER_ROLES.filter((role) => {
+    const links = getLinksForRole(role);
+    return hasRole(role) && links.length > 0;
+  });
 
   return (
     <nav className="flex items-center px-4">

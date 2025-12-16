@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSearchCondition as useSearchConditionBase } from '@/hooks/useSearchCondition';
 
 const FORM_TYPE = 'interviewer';
-const CURRENT_PATH = '/master/interviewer-management';
+const CURRENT_PATH = '/admin/interviewer-management';
 
 const buildUrlParams = (searchParams: URLSearchParams): string => {
   const params = new URLSearchParams();

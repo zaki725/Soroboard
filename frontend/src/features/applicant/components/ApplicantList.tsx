@@ -74,7 +74,7 @@ export const ApplicantList = () => {
   };
 
   const handleRowClick = (row: { id: string }) => {
-    router.push(`/master/applicants/${row.id}`);
+    router.push(`/admin/applicants/${row.id}`);
   };
 
   const columns = [

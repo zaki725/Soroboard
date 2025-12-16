@@ -103,7 +103,7 @@ export const ApplicantDetail = ({}: { applicantId: string }) => {
         <div className="flex gap-4">
           <Button
             variant="outline"
-            onClick={() => router.push('/master/applicants')}
+            onClick={() => router.push('/admin/applicants')}
           >
             一覧に戻る
           </Button>

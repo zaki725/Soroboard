@@ -18,7 +18,7 @@ export const HelpTooltip = ({
   children,
   position = 'bottom',
 }: HelpTooltipProps) => {
-  const { isMaster } = useAuth();
+  const { isAdmin } = useAuth();
 
   const positionStyles = {
     top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
@@ -47,7 +47,7 @@ export const HelpTooltip = ({
         {message}
         {linkText && (
           <div className="mt-1">
-            {linkHref && isMaster() ? (
+            {linkHref && isAdmin() ? (
               <Link
                 href={linkHref}
                 className="text-blue-300 hover:text-blue-100 underline"

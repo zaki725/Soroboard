@@ -13,12 +13,12 @@ export default function AdminLayout({
   const { hasRole } = useAuth();
 
   useEffect(() => {
-    if (!hasRole('admin')) {
+    if (!hasRole('ADMIN')) {
       router.push('/unauthorized');
     }
   }, [hasRole, router]);
 
-  if (!hasRole('admin')) {
+  if (!hasRole('ADMIN')) {
     return null;
   }
 

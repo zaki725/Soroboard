@@ -141,7 +141,7 @@ export const useUserCsvUpload = ({ fetchUsers }: UseUserCsvUploadParams) => {
         email: row['メールアドレス'],
         firstName: row['名'],
         lastName: row['姓'],
-        role: (roleOption?.value || 'user') as UserRole,
+        role: (roleOption?.value || 'TEACHER') as UserRole,
         gender: (genderOption?.value || null) as Gender | null,
         departmentId,
       };

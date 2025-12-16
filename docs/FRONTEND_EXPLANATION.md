@@ -740,7 +740,7 @@ export const UserManagement = () => {
 #### ✅ layoutでの権限チェック
 
 ```tsx
-// app/master/layout.tsx
+// app/admin/layout.tsx
 'use client';
 
 import { useEffect } from 'react';
@@ -1229,7 +1229,7 @@ import { useSearchCondition as useSearchConditionBase } from '@/hooks/useSearchC
 import { useSearchParams } from 'next/navigation';
 
 const FORM_TYPE = 'user';
-const CURRENT_PATH = '/master/user-management';
+const CURRENT_PATH = '/admin/user-management';
 
 const buildUrlParams = (searchParams: URLSearchParams): string => {
   const params = new URLSearchParams();

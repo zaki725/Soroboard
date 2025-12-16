@@ -85,8 +85,8 @@ export const useCompanyList = () => {
 
       const queryString = urlParams.toString();
       const url = queryString
-        ? `/master/company-management?${queryString}`
-        : '/master/company-management';
+        ? `/admin/company-management?${queryString}`
+        : '/admin/company-management';
       router.push(url);
     },
     [router],
@@ -99,7 +99,7 @@ export const useCompanyList = () => {
 
   const handleReset = () => {
     // URLのみを変更し、状態はURLパラメータの変更検知から更新させる
-    router.push('/master/company-management');
+    router.push('/admin/company-management');
   };
 
   const currentSearchParams = getSearchParamsFromUrl();
