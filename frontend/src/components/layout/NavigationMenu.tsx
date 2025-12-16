@@ -24,7 +24,8 @@ export const NavigationMenu = () => {
   const teacherLinks = getLinksForRole('TEACHER');
   const adminLinks = getLinksForRole('ADMIN');
 
-  if (hasRole('TEACHER') && teacherLinks.length > 0) visibleRoles.push('TEACHER');
+  if (hasRole('TEACHER') && teacherLinks.length > 0)
+    visibleRoles.push('TEACHER');
   if (hasRole('ADMIN') && adminLinks.length > 0) visibleRoles.push('ADMIN');
 
   return (
