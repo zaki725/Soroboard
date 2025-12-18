@@ -4,6 +4,8 @@ import { AuthService } from '../../application/auth/auth.service';
 import type { LoginRequestDto, LoginResponseDto } from '../../dto/auth/auth.dto';
 import { loginRequestSchema } from '../../dto/auth/auth.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
+import { InternalServerError } from '../../../common/errors/internal-server.error';
+import { INTERNAL_SERVER_ERROR } from '../../../common/constants';
 
 type RequestWithSession = Request & {
   session: {
@@ -37,7 +39,7 @@ export class AuthController {
     await new Promise<void>((resolve, reject) => {
       req.session.save((err) => {
         if (err) {
-          reject(err instanceof Error ? err : new Error(String(err)));
+          reject(new InternalServerError(INTERNAL_SERVER_ERROR));
         } else {
           resolve();
         }
