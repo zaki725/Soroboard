@@ -11,7 +11,7 @@ type RequestWithSession = Request & {
 @Controller('auth')
 export class AuthController {
   @Get('me')
-  async getMe(@Req() req: RequestWithSession): Promise<LoginResponseDto> {
+  getMe(@Req() req: RequestWithSession): LoginResponseDto {
     if (!req.session?.user) {
       throw new UnauthorizedException('認証が必要です');
     }

@@ -37,7 +37,7 @@ export class AuthController {
     await new Promise<void>((resolve, reject) => {
       req.session.save((err) => {
         if (err) {
-          reject(err);
+          reject(err instanceof Error ? err : new Error(String(err)));
         } else {
           resolve();
         }
