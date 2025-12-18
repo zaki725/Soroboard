@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useCallback } from 'react';
 import { useSWRData } from '@/libs/swr-client';
 import type { User } from '@/types/user';
 
@@ -41,11 +41,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const user = response ? convertToUser(response) : null;
 
   // SWR の mutate をそのままラップし、/auth/me を再取得して User 型に変換する
-  const mutate = async () => {
-    return mutateResponse().then((res) =>
-      res ? convertToUser(res) : undefined,
-    );
-  };
+  const mutate = useCallback(async () => {
+    return mutateResponse().then((res) => (res ? convertToUser(res) : undefined));
+  }, [mutateResponse]);
 
   const value = useMemo(
     () => ({
@@ -53,7 +51,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       isLoading,
       mutate,
     }),
-    [user, isLoading],
+    [user, isLoading, mutate],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
