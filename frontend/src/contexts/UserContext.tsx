@@ -42,7 +42,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   // SWR の mutate をそのままラップし、/auth/me を再取得して User 型に変換する
   const mutate = useCallback(async () => {
-    return mutateResponse().then((res) => (res ? convertToUser(res) : undefined));
+    return mutateResponse().then((res) =>
+      res ? convertToUser(res) : undefined,
+    );
   }, [mutateResponse]);
 
   const value = useMemo(
