@@ -7,7 +7,6 @@ import { handleFormError } from '@/libs/error-handler';
 import { errorMessages } from '@/constants/error-messages';
 import { useUser } from '@/contexts/UserContext';
 import type { LoginFormData } from '../types/login-form';
-import type { User } from '@/types/user';
 
 type LoginResponse = {
   id: string;
@@ -41,16 +40,8 @@ export const useLogin = () => {
           throw new Error(errorMessages.loginFailed);
         }
 
-        // UserContextを更新（SWRのmutateを使用）
-        const user: User = {
-          id: response.id,
-          name: `${response.lastName} ${response.firstName}`,
-          email: response.email,
-          role: response.role as User['role'],
-        };
-
-        // SWRのキャッシュを更新
-        await mutate(user);
+        // セッションが確立されたので /auth/me を再取得してユーザー情報を更新
+        await mutate();
 
         router.push('/');
       } catch (err) {

@@ -33,6 +33,17 @@ export class AuthController {
 
     req.session.user = user;
 
+    // セッションを明示的に保存（Cookieが確実に送信されるようにする）
+    await new Promise<void>((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+
     return user;
   }
 }

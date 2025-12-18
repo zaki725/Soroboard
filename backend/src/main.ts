@@ -71,9 +71,14 @@ async function bootstrap() {
   // SESSION_SECRETの確定（既にチェック済み）
   const sessionSecret = process.env.SESSION_SECRET!;
 
-  // クロスオリジン対応のためsameSite: 'none'で固定
-  // 開発環境ではhttp://localhostを使用するためsecure: falseを許可
-  const sameSite = 'none' as const;
+  /**
+   * sameSite設定
+   * 
+   * Chrome等の現代的なブラウザでは、SameSite=None の場合 Secure 属性が必須です。
+   * 開発環境（http）では SameSite=None にするとCookieが拒否されるため、Lax を使用します。
+   * localhost同士であれば Lax でもCookieが送信されます。
+   */
+  const sameSite = 'lax' as const;
 
   // express-sessionの設定
   app.use(
