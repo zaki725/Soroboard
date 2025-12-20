@@ -6,7 +6,6 @@ import { seedJobCategories } from './seeds/job-category.seed';
 import { seedCompanies } from './seeds/company.seed';
 import { seedSelectionProcesses } from './seeds/selection-process.seed';
 import { seedUniversities } from './seeds/university.seed';
-import { seedFaculties } from './seeds/faculty.seed';
 import { seedDeviationValues } from './seeds/deviation-value.seed';
 import { seedLocations } from './seeds/location.seed';
 import { seedSchools } from './seeds/school.seed';
@@ -50,11 +49,7 @@ async function main() {
     await seedUniversities({ prisma });
     console.log('');
 
-    // FacultyはUniversityに依存するので後に作成
-    await seedFaculties({ prisma });
-    console.log('');
-
-    // DeviationValueはFacultyに依存するので後に作成
+    // DeviationValueは後に作成
     await seedDeviationValues({ prisma });
     console.log('');
 
