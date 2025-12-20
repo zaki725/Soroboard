@@ -5,9 +5,6 @@ import { RecruitYearModule } from './modules/recruit-year/recruit-year.module';
 import { UserModule } from './modules/user/user.module';
 import { CompanyModule } from './modules/company/company.module';
 import { InterviewerModule } from './modules/interviewer/interviewer.module';
-import { EventLocationModule } from './modules/event-location/event-location.module';
-import { EventMasterModule } from './modules/event-master/event-master.module';
-import { EventModule } from './modules/event/event.module';
 import { SearchConditionModule } from './modules/search-condition/search-condition.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -20,9 +17,6 @@ import { AuthModule } from './modules/auth/auth.module';
     UserModule,
     CompanyModule,
     InterviewerModule,
-    EventLocationModule,
-    EventMasterModule,
-    EventModule,
     SearchConditionModule,
     TeacherModule,
     AuthModule,
