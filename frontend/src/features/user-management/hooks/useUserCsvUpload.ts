@@ -6,7 +6,7 @@ import { errorMessages } from '@/constants/error-messages';
 import { parseCSV } from '@/libs/csv-parse';
 import { chunk } from '@/libs/array-utils';
 import { roleOptions, genderOptions } from '../constants/user.constants';
-import { useDepartmentList } from '@/features/department-management/hooks/useDepartmentList';
+// department-management機能は削除されたため、部署フィールドは無効化
 import type { UserResponseDto, UserRole, Gender } from '@/types/user';
 
 type UseUserCsvUploadParams = {
@@ -14,7 +14,8 @@ type UseUserCsvUploadParams = {
 };
 
 export const useUserCsvUpload = ({ fetchUsers }: UseUserCsvUploadParams) => {
-  const { departments } = useDepartmentList();
+  // department-management機能は削除されたため、部署は空配列
+  const departments: Array<{ id: string; name: string }> = [];
 
   const validateFileType = (file: File): void => {
     const fileExtension = file.name.split('.').pop()?.toLowerCase();

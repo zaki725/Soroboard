@@ -19,7 +19,7 @@ import {
 } from '@/components/form';
 import { roleOptions, genderOptions } from '../../constants/user.constants';
 import { useUserForm } from '../../hooks/useUserForm';
-import { useDepartmentList } from '@/features/department-management/hooks/useDepartmentList';
+// department-management機能は削除されたため、部署フィールドは無効化
 import type { UserRole, Gender } from '@/types/user';
 import type { SelectOption } from '@/components/ui';
 
@@ -35,17 +35,11 @@ type UserFormData = {
 export const UserForm = () => {
   const params = useParams();
   const userId = params?.id as string | undefined;
-  const {
-    departments,
-    isLoading: isLoadingDepartments,
-    error: departmentError,
-  } = useDepartmentList();
-  const departmentOptions: SelectOption[] = useMemo(() => {
-    return departments.map((dept) => ({
-      value: dept.id,
-      label: dept.name,
-    }));
-  }, [departments]);
+  // department-management機能は削除されたため、部署フィールドは無効化
+  const departments: Array<{ id: string; name: string }> = [];
+  const isLoadingDepartments = false;
+  const departmentError: string | null = null;
+  const departmentOptions: SelectOption[] = [];
 
   const {
     isLoading,
@@ -61,22 +55,8 @@ export const UserForm = () => {
     [isEdit, userId],
   );
 
-  // システム本部のIDを取得
-  const systemDeptId = useMemo(() => {
-    const dept = departments.find((d) => d.name === 'システム本部');
-    return dept?.id || '';
-  }, [departments]);
-
-  // 新規作成時のデフォルト値を修正（システム本部を設定）
-  const adjustedDefaultValues = useMemo(() => {
-    if (!isEdit && defaultValues.departmentId === '') {
-      return {
-        ...defaultValues,
-        departmentId: systemDeptId,
-      };
-    }
-    return defaultValues;
-  }, [defaultValues, systemDeptId, isEdit]);
+  // department-management機能は削除されたため、デフォルト値はそのまま使用
+  const adjustedDefaultValues = defaultValues;
 
   const methods = useForm<UserFormData>({
     defaultValues: adjustedDefaultValues,
@@ -139,33 +119,7 @@ export const UserForm = () => {
                   label="性別"
                   options={genderOptions}
                 />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <label className="font-medium text-sm text-gray-700">
-                      部署
-                    </label>
-                    <HelpTooltip
-                      message="部署がプルダウンにない場合は"
-                      linkText="登録"
-                      linkHref="/admin/department-management"
-                    />
-                  </div>
-                  <SelectField
-                    name="departmentId"
-                    options={departmentOptions}
-                    rules={{ required: '部署は必須です' }}
-                    disabled={
-                      isLoadingDepartments ||
-                      !!departmentError ||
-                      departmentOptions.length === 0
-                    }
-                  />
-                </div>
-                {departmentError && (
-                  <p className="text-sm text-red-600 mt-1">
-                    部署データの取得に失敗しました: {departmentError}
-                  </p>
-                )}
+                {/* department-management機能は削除されたため、部署フィールドは非表示 */}
               </div>
 
               <div className="flex gap-4 mt-6">

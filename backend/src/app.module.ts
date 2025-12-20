@@ -3,16 +3,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { LoggerModule } from './config/logger.module';
 import { RecruitYearModule } from './modules/recruit-year/recruit-year.module';
 import { UserModule } from './modules/user/user.module';
-import { CompanyModule } from './modules/company/company.module';
-import { DepartmentModule } from './modules/department/department.module';
-import { InterviewerModule } from './modules/interviewer/interviewer.module';
-import { UniversityModule } from './modules/university/university.module';
-import { FacultyModule } from './modules/faculty/faculty.module';
-import { DeviationValueModule } from './modules/deviation-value/deviation-value.module';
-import { EducationalBackgroundCommandModule } from './modules/educational-background/educational-background-command.module';
-import { EventLocationModule } from './modules/event-location/event-location.module';
-import { EventMasterModule } from './modules/event-master/event-master.module';
-import { EventModule } from './modules/event/event.module';
 import { SearchConditionModule } from './modules/search-condition/search-condition.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -23,16 +13,6 @@ import { AuthModule } from './modules/auth/auth.module';
     PrismaModule,
     RecruitYearModule,
     UserModule,
-    CompanyModule,
-    DepartmentModule,
-    InterviewerModule,
-    UniversityModule,
-    FacultyModule,
-    DeviationValueModule,
-    EducationalBackgroundCommandModule,
-    EventLocationModule,
-    EventMasterModule,
-    EventModule,
     SearchConditionModule,
     TeacherModule,
     AuthModule,

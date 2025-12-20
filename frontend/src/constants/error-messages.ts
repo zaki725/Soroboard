@@ -9,8 +9,6 @@ export const errorMessages = {
   userListFetchFailed: 'ユーザー一覧の取得に失敗しました',
   // 会社関連
   companyListFetchFailed: '会社データの取得に失敗しました',
-  // 部署関連
-  departmentListFetchFailed: '部署データの取得に失敗しました',
   // 大学関連
   universityListFetchFailed: '大学データの取得に失敗しました',
   // 面接官関連

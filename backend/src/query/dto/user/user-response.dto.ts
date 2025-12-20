@@ -3,7 +3,6 @@ import type { UserRole, Gender } from '../../../common/enums';
 export class UserResponseDto {
   constructor(partial: Partial<UserResponseDto>) {
     Object.assign(this, partial);
-    this.isInterviewer = partial.isInterviewer ?? false;
     this.departmentName = partial.departmentName ?? null;
   }
 
@@ -18,6 +17,5 @@ export class UserResponseDto {
   createdBy: string;
   updatedAt: Date;
   updatedBy: string;
-  isInterviewer: boolean;
   departmentName: string | null;
 }

@@ -17,7 +17,6 @@ export { DownloadIcon } from './DownloadIcon';
 export { DefaultUserIcon } from './DefaultUserIcon';
 export { MailIcon } from './MailIcon';
 export { InterviewerIcon } from './InterviewerIcon';
-export { DepartmentIcon } from './DepartmentIcon';
 export { UniversityIcon } from './UniversityIcon';
 export { LocationIcon } from './LocationIcon';
 export { CalendarIcon } from './CalendarIcon';

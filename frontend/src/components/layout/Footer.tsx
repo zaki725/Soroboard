@@ -18,7 +18,7 @@ export const Footer = () => {
     >
       <div className="container mx-auto px-4 py-6">
         <div className="text-center text-sm">
-          <p>© 2025 採用管理システム. All rights reserved.</p>
+          <p>© 2025 Soroboard. All rights reserved.</p>
         </div>
       </div>
     </footer>

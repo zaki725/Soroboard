@@ -3,6 +3,4 @@
  * このファイルから型をエクスポートすることで、フロントエンドから直接インポート可能
  */
 
-export type { InterviewerCategory } from '../../query/types/interviewer.types';
-
 export type { EducationType } from '../../common/enums';

@@ -14,13 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: '採用管理システム',
-  description: '採用管理システム',
-  icons: {
-    icon: [{ url: '/favicon.png', type: 'image/png' }],
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
-  },
+  title: 'Soroboard',
+  description: 'Soroboard',
 };
 
 export default function RootLayout({

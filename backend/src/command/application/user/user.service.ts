@@ -118,7 +118,6 @@ export class UserService {
         'ユーザー情報の取得に失敗しました。データの整合性に問題があります。',
       );
     }
-    // InterviewerResponseDtoと同じパターン: 型推論を改善するため、明示的に型を指定
     return userWithRelations;
   }
 
