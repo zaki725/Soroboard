@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { formatCurrentDateToJST } from '@/libs/date-utils';
-import { useTodayEvent } from '@/features/event-management/hooks/useTodayEvent';
-
+// event-management機能は削除されたため、useTodayEventは使用しない
 export const HeaderDateAndRcdx = () => {
   const [currentDate, setCurrentDate] = useState<string>('');
-  const { todayEvent } = useTodayEvent();
+  // event-management機能は削除されたため、todayEventは使用しない
+  const todayEvent = null;
 
   useEffect(() => {
     const updateDate = () => {
@@ -27,17 +27,7 @@ export const HeaderDateAndRcdx = () => {
           <span className="text-sm font-medium text-white">{currentDate}</span>
         )}
       </div>
-      {todayEvent && (
-        <div className="text-xs text-white">
-          今日のイベント:{' '}
-          <Link
-            href={`/admin/event-management/${todayEvent.id}`}
-            className="underline hover:no-underline"
-          >
-            {todayEvent.eventMasterName}
-          </Link>
-        </div>
-      )}
+      {/* event-management機能は削除されたため、今日のイベント表示は非表示 */}
     </div>
   );
 };

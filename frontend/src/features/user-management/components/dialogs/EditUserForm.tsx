@@ -5,7 +5,7 @@ import type { UseFormSetError } from 'react-hook-form';
 import { Loading, Button, CancelIcon, SaveIcon } from '@/components/ui';
 import { TextField, SelectField, HelpTooltip } from '@/components/form';
 import { roleOptions, genderOptions } from '../../constants/user.constants';
-import { useDepartmentList } from '@/features/department-management/hooks/useDepartmentList';
+// department-management機能は削除されたため、部署フィールドは無効化
 import { useMemo } from 'react';
 import type { UserResponseDto, UserRole, Gender } from '@/types/user';
 import type { SelectOption } from '@/components/ui';
@@ -35,17 +35,11 @@ export const EditUserForm = ({
   onCancel,
   onSuccess,
 }: EditUserFormProps) => {
-  const {
-    departments,
-    isLoading: isLoadingDepartments,
-    error: departmentError,
-  } = useDepartmentList();
-  const departmentOptions: SelectOption[] = useMemo(() => {
-    return departments.map((dept) => ({
-      value: dept.id,
-      label: dept.name,
-    }));
-  }, [departments]);
+  // department-management機能は削除されたため、部署フィールドは無効化
+  const departments: Array<{ id: string; name: string }> = [];
+  const isLoadingDepartments = false;
+  const departmentError: string | null = null;
+  const departmentOptions: SelectOption[] = [];
 
   const methods = useForm<UserFormData>({
     defaultValues: {
@@ -108,31 +102,7 @@ export const EditUserForm = ({
             rules={{ required: '権限は必須です' }}
           />
           <SelectField name="gender" label="性別" options={genderOptions} />
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <label className="font-medium text-sm text-gray-700">部署</label>
-              <HelpTooltip
-                message="部署がプルダウンにない場合は"
-                linkText="登録"
-                linkHref="/admin/department-management"
-              />
-            </div>
-            <SelectField
-              name="departmentId"
-              options={departmentOptions}
-              rules={{ required: '部署は必須です' }}
-              disabled={
-                isLoadingDepartments ||
-                !!departmentError ||
-                departmentOptions.length === 0
-              }
-            />
-          </div>
-          {departmentError && (
-            <p className="text-sm text-red-600 mt-1">
-              部署データの取得に失敗しました: {departmentError}
-            </p>
-          )}
+          {/* department-management機能は削除されたため、部署フィールドは非表示 */}
         </div>
 
         <div className="flex justify-end gap-2 mt-6">

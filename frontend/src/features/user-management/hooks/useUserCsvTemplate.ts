@@ -6,15 +6,15 @@ import {
   userCreateTemplateExcelHeaders,
   userEditTemplateExcelHeaders,
 } from '../constants/user-excel.constants';
-import { useDepartmentList } from '@/features/department-management/hooks/useDepartmentList';
+// department-management機能は削除されたため、部署フィールドは無効化
 import { apiClient } from '@/libs/api-client';
 import type { UserResponseDto } from '@/types/user';
 import { extractErrorMessage } from '@/libs/error-handler';
 import toast from 'react-hot-toast';
 
 export const useUserCsvTemplate = () => {
-  const { departments } = useDepartmentList();
-  const departmentNames = departments.map((dept) => dept.name);
+  // department-management機能は削除されたため、部署名は空配列
+  const departmentNames: string[] = [];
 
   const fetchAllUsers = useCallback(async (): Promise<UserResponseDto[]> => {
     try {

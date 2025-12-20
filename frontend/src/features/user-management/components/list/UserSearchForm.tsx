@@ -4,7 +4,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { Button, SearchIcon, ResetIcon, Loading } from '@/components/ui';
 import { TextField, SelectField } from '@/components/form';
 import { roleOptions, genderOptions } from '../../constants/user.constants';
-import { useDepartmentList } from '@/features/department-management/hooks/useDepartmentList';
+// department-management機能は削除されたため、部署フィールドは無効化
 import { useMemo } from 'react';
 import type { UserRole, Gender } from '@/types/user';
 import type { SelectOption } from '@/components/ui';
@@ -28,16 +28,10 @@ export const UserSearchForm = ({
   onReset,
   searchParams,
 }: UserSearchFormProps) => {
-  const { departments, isLoading: isLoadingDepartments } = useDepartmentList();
-  const departmentOptions: SelectOption[] = useMemo(() => {
-    return [
-      { value: '', label: 'すべて' },
-      ...departments.map((dept) => ({
-        value: dept.id,
-        label: dept.name,
-      })),
-    ];
-  }, [departments]);
+  // department-management機能は削除されたため、部署フィールドは無効化
+  const departments: Array<{ id: string; name: string }> = [];
+  const isLoadingDepartments = false;
+  const departmentOptions: SelectOption[] = [{ value: '', label: 'すべて' }];
 
   const methods = useForm<UserSearchFormData>({
     defaultValues: searchParams,
@@ -87,13 +81,7 @@ export const UserSearchForm = ({
           <div className="w-40">
             <SelectField name="gender" label="性別" options={genderOptions} />
           </div>
-          <div className="w-40">
-            <SelectField
-              name="departmentId"
-              label="部署"
-              options={departmentOptions}
-            />
-          </div>
+          {/* department-management機能は削除されたため、部署フィールドは非表示 */}
           <Button type="submit" icon={<SearchIcon />}>
             検索
           </Button>
