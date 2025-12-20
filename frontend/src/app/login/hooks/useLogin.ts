@@ -49,12 +49,7 @@ export const useLogin = () => {
           throw err;
         }
 
-        handleFormError(
-          err,
-          setFormError,
-          setError,
-          errorMessages.loginFailed,
-        );
+        handleFormError(err, setFormError, setError, errorMessages.loginFailed);
         return;
       } finally {
         setIsLoading(false);
