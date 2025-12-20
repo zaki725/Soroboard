@@ -1,3 +1,5 @@
+import { errorMessages } from '@/constants/error-messages';
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
 
@@ -59,12 +61,12 @@ export const apiClient = async <T>(
   if (!response.ok) {
     const errorData: ApiError = await response.json().catch(() => ({
       statusCode: response.status,
-      message: 'リクエストに失敗しました',
+      message: errorMessages.requestFailed,
     }));
 
     const statusCode = errorData.statusCode || response.status;
     const errorMessageMap: Record<number, string> = {
-      500: '予期せぬエラーが発生しました',
+      500: errorMessages.unexpectedError,
     };
 
     const message =
@@ -80,25 +82,29 @@ export const apiClient = async <T>(
     );
   }
 
-  // 204 No Content や空のレスポンスの場合
-  if (
-    response.status === 204 ||
-    response.headers.get('content-length') === '0'
-  ) {
-    return null as T;
+  // 204 No Content の場合は undefined を返す（void型との互換性のため）
+  if (response.status === 204) {
+    return undefined as T;
   }
 
-  // レスポンステキストを取得して、空の場合はnullを返す
+  // レスポンステキストを取得
   const text = await response.text();
   if (!text || text.trim().length === 0) {
-    return null as T;
+    throw new ApiClientError(
+      response.status,
+      undefined,
+      errorMessages.responseEmpty,
+    );
   }
 
   // JSONパースを試みる
   try {
     return JSON.parse(text) as T;
-  } catch {
-    // JSONパースに失敗した場合はnullを返す
-    return null as T;
+  } catch (parseError) {
+    throw new ApiClientError(
+      response.status,
+      undefined,
+      errorMessages.jsonParseFailed,
+    );
   }
 };
