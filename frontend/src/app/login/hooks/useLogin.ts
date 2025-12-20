@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { UseFormSetError } from 'react-hook-form';
-import { apiClient } from '@/libs/api-client';
+import { apiClient, ApiClientError } from '@/libs/api-client';
 import { handleFormError } from '@/libs/error-handler';
 import { errorMessages } from '@/constants/error-messages';
 import { useUser } from '@/contexts/UserContext';
@@ -37,15 +37,18 @@ export const useLogin = () => {
           },
         });
 
-        if (!response) {
-          throw new Error(errorMessages.loginFailed);
-        }
-
         // セッションが確立されたので /auth/me を再取得してユーザー情報を更新
         await mutate();
 
         router.push('/');
       } catch (err) {
+        if (
+          (err instanceof ApiClientError && err.statusCode >= 500) ||
+          (err instanceof Error && !(err instanceof ApiClientError))
+        ) {
+          throw err;
+        }
+
         handleFormError(
           err,
           setFormError,
