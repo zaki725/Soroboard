@@ -2,7 +2,6 @@ export const INJECTION_TOKENS = {
   IRecruitYearRepository: Symbol('IRecruitYearRepository'),
   IUserRepository: Symbol('IUserRepository'),
   ICompanyRepository: Symbol('ICompanyRepository'),
-  IDepartmentRepository: Symbol('IDepartmentRepository'),
   IInterviewerRepository: Symbol('IInterviewerRepository'),
   IUniversityRepository: Symbol('IUniversityRepository'),
   IFacultyRepository: Symbol('IFacultyRepository'),

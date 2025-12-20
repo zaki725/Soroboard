@@ -4,7 +4,6 @@ import { LoggerModule } from './config/logger.module';
 import { RecruitYearModule } from './modules/recruit-year/recruit-year.module';
 import { UserModule } from './modules/user/user.module';
 import { CompanyModule } from './modules/company/company.module';
-import { DepartmentModule } from './modules/department/department.module';
 import { InterviewerModule } from './modules/interviewer/interviewer.module';
 import { UniversityModule } from './modules/university/university.module';
 import { FacultyModule } from './modules/faculty/faculty.module';
@@ -24,7 +23,6 @@ import { AuthModule } from './modules/auth/auth.module';
     RecruitYearModule,
     UserModule,
     CompanyModule,
-    DepartmentModule,
     InterviewerModule,
     UniversityModule,
     FacultyModule,

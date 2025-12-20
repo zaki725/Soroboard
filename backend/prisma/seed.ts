@@ -4,7 +4,6 @@ import { seedAuthUsers } from './seeds/auth-user.seed';
 import { seedRecruitYears } from './seeds/recruit-year.seed';
 import { seedJobCategories } from './seeds/job-category.seed';
 import { seedCompanies } from './seeds/company.seed';
-import { seedDepartments } from './seeds/department.seed';
 import { seedSelectionProcesses } from './seeds/selection-process.seed';
 import { seedUniversities } from './seeds/university.seed';
 import { seedFaculties } from './seeds/faculty.seed';
@@ -31,10 +30,6 @@ async function main() {
     // 依存関係の順序で実行
     // RecruitYearはマスタデータなので先に作成
     await seedRecruitYears({ prisma });
-    console.log('');
-
-    // Departmentはマスタデータなので先に作成
-    await seedDepartments({ prisma });
     console.log('');
 
     // Locationはマスタデータなので先に作成
