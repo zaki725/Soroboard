@@ -6,6 +6,6 @@ import { useEffect } from 'react';
  */
 export const usePageTitle = (title: string) => {
   useEffect(() => {
-    document.title = title ? `${title} | 採用管理システム` : '採用管理システム';
+    document.title = title ? `${title} | Soroboard` : 'Soroboard';
   }, [title]);
 };
