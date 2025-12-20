@@ -21,7 +21,7 @@ export async function seedAuthUsers({ prisma }: { prisma: PrismaClient }) {
 
   // 既存のTeacherテーブルのメールアドレスに対応するAuthUserを作成
   const teachers = await prisma.teacher.findMany({
-    select: { email: true },
+    select: { email: true, id: true },
   });
 
   if (teachers.length === 0) {
@@ -29,17 +29,28 @@ export async function seedAuthUsers({ prisma }: { prisma: PrismaClient }) {
     return;
   }
 
-  // 一括作成
-  await prisma.authUser.createMany({
-    data: teachers.map((teacher) => ({
-      id: ulid(),
-      email: teacher.email,
-      passwordHash,
-      role: AuthUserRole.TEACHER,
-      createdBy: systemUserId,
-      updatedBy: systemUserId,
-    })),
-  });
+  // AuthUserを作成し、TeacherのauthUserIdを更新
+  for (const teacher of teachers) {
+    const authUserId = ulid();
+
+    // AuthUserを作成
+    await prisma.authUser.create({
+      data: {
+        id: authUserId,
+        email: teacher.email,
+        passwordHash,
+        role: AuthUserRole.TEACHER,
+        createdBy: systemUserId,
+        updatedBy: systemUserId,
+      },
+    });
+
+    // TeacherのauthUserIdを更新
+    await prisma.teacher.update({
+      where: { id: teacher.id },
+      data: { authUserId },
+    });
+  }
 
   console.log(`${teachers.length} 件の AuthUser 作成完了`);
 }

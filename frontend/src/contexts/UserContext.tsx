@@ -1,23 +1,51 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useCallback } from 'react';
 import { useSWRData } from '@/libs/swr-client';
 import type { User } from '@/types/user';
 
 type UserContextType = {
   user: User | null;
   isLoading: boolean;
-  mutate: (user?: User) => Promise<User | undefined>;
+  mutate: () => Promise<User | undefined>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  // TODO: /auth/meエンドポイント実装後に有効化
-  // const { data: user, isLoading, mutate } = useSWRData<User>('/auth/me');
+// バックエンドのLoginResponseDto型（/auth/me のレスポンス）
+type LoginResponseDto = {
+  id: string;
+  email: string;
+  role: 'TEACHER' | 'ADMIN';
+  firstName: string;
+  lastName: string;
+};
 
-  // 一時的な実装：エンドポイント実装までnullを返す（SWRのkeyをnullにすることで呼び出さない）
-  const { data: user, isLoading, mutate } = useSWRData<User>(null);
+// LoginResponseDto を User 型に変換（読み取り専用の一方向変換）
+const convertToUser = (response: LoginResponseDto): User => {
+  return {
+    id: response.id,
+    name: `${response.lastName} ${response.firstName}`,
+    email: response.email,
+    role: response.role, // バックエンドのAuthUserRoleとフロントのUserRoleが同じなので変換不要
+  };
+};
+
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const {
+    data: response,
+    isLoading,
+    mutate: mutateResponse,
+  } = useSWRData<LoginResponseDto>('/auth/me');
+
+  const user = response ? convertToUser(response) : null;
+
+  // SWR の mutate をそのままラップし、/auth/me を再取得して User 型に変換する
+  const mutate = useCallback(async () => {
+    return mutateResponse().then((res) =>
+      res ? convertToUser(res) : undefined,
+    );
+  }, [mutateResponse]);
 
   const value = useMemo(
     () => ({

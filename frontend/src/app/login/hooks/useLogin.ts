@@ -1,13 +1,11 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { UseFormSetError } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
-import { apiClient } from '@/libs/api-client';
+import { apiClient, ApiClientError } from '@/libs/api-client';
 import { handleFormError } from '@/libs/error-handler';
 import { errorMessages } from '@/constants/error-messages';
 import { useUser } from '@/contexts/UserContext';
 import type { LoginFormData } from '../types/login-form';
-import type { User } from '@/types/user';
 
 type LoginResponse = {
   id: string;
@@ -21,6 +19,7 @@ export const useLogin = () => {
   const router = useRouter();
   const { mutate } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = useCallback(
     async (
@@ -29,6 +28,7 @@ export const useLogin = () => {
     ) => {
       try {
         setIsLoading(true);
+        setError(null);
         const response = await apiClient<LoginResponse>('/auth/login', {
           method: 'POST',
           body: {
@@ -37,29 +37,19 @@ export const useLogin = () => {
           },
         });
 
-        if (!response) {
-          throw new Error(errorMessages.loginFailed);
-        }
-
-        // UserContextを更新（SWRのmutateを使用）
-        const user: User = {
-          id: response.id,
-          name: `${response.lastName} ${response.firstName}`,
-          email: response.email,
-          role: response.role as User['role'],
-        };
-
-        // SWRのキャッシュを更新
-        await mutate(user);
+        // セッションが確立されたので /auth/me を再取得してユーザー情報を更新
+        await mutate();
 
         router.push('/');
       } catch (err) {
-        handleFormError(
-          err,
-          setFormError,
-          (message) => toast.error(message),
-          errorMessages.loginFailed,
-        );
+        if (
+          (err instanceof ApiClientError && err.statusCode >= 500) ||
+          (err instanceof Error && !(err instanceof ApiClientError))
+        ) {
+          throw err;
+        }
+
+        handleFormError(err, setFormError, setError, errorMessages.loginFailed);
         return;
       } finally {
         setIsLoading(false);
@@ -71,5 +61,6 @@ export const useLogin = () => {
   return {
     handleSubmit,
     isLoading,
+    error,
   };
 };
