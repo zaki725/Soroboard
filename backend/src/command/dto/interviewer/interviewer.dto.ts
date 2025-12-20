@@ -12,12 +12,6 @@ export class CreateInterviewerRequestDto {
 
   @ApiProperty({ description: 'カテゴリ', enum: INTERVIEWER_CATEGORIES })
   category: InterviewerCategory;
-
-  @ApiProperty({ description: '出身大学ID', required: false })
-  universityId?: string;
-
-  @ApiProperty({ description: '出身学部ID', required: false })
-  facultyId?: string;
 }
 
 export const createInterviewerRequestSchema = z.object({
@@ -30,8 +24,6 @@ export const createInterviewerRequestSchema = z.object({
       }),
     },
   ),
-  universityId: z.string().optional(),
-  facultyId: z.string().optional(),
 });
 
 export class UpdateInterviewerRequestDto {
@@ -40,12 +32,6 @@ export class UpdateInterviewerRequestDto {
 
   @ApiProperty({ description: 'カテゴリ', enum: INTERVIEWER_CATEGORIES })
   category: InterviewerCategory;
-
-  @ApiProperty({ description: '出身大学ID', required: false })
-  universityId?: string;
-
-  @ApiProperty({ description: '出身学部ID', required: false })
-  facultyId?: string;
 }
 
 export const updateInterviewerRequestSchema = z.object({
@@ -58,8 +44,6 @@ export const updateInterviewerRequestSchema = z.object({
       }),
     },
   ),
-  universityId: z.string().optional(),
-  facultyId: z.string().optional(),
 });
 
 export class BulkCreateInterviewerRequestDto {
@@ -80,8 +64,6 @@ const bulkCreateInterviewerItemSchema = z.object({
       }),
     },
   ),
-  universityId: z.string().optional(),
-  facultyId: z.string().optional(),
 });
 
 export const bulkCreateInterviewerRequestSchema = z.object({
@@ -108,8 +90,6 @@ const bulkUpdateInterviewerItemSchema = z.object({
       }),
     },
   ),
-  universityId: z.string().optional(),
-  facultyId: z.string().optional(),
 });
 
 export const bulkUpdateInterviewerRequestSchema = z.object({

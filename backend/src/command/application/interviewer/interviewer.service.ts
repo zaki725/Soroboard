@@ -12,16 +12,12 @@ import { InterviewerBulkService } from './interviewer-bulk.service';
 type CreateParams = {
   userId: string;
   category: InterviewerCategory;
-  universityId?: string;
-  facultyId?: string;
   userIdForOperation: string;
 };
 
 type UpdateParams = {
   userId: string;
   category: InterviewerCategory;
-  universityId?: string;
-  facultyId?: string;
   userIdForOperation: string;
 };
 
@@ -46,8 +42,6 @@ export class InterviewerService {
     const interviewerEntity = InterviewerEntity.create({
       userId: params.userId,
       category: params.category,
-      universityId: params.universityId,
-      facultyId: params.facultyId,
       createdBy: params.userIdForOperation,
       updatedBy: params.userIdForOperation,
     });
@@ -56,8 +50,6 @@ export class InterviewerService {
     return new InterviewerResponseDto({
       userId: created.userId,
       category: created.category,
-      universityId: created.universityId,
-      facultyId: created.facultyId,
     });
   }
 
@@ -81,8 +73,6 @@ export class InterviewerService {
     const interviewerEntity = InterviewerEntity.create({
       userId: params.userId,
       category: params.category,
-      universityId: params.universityId,
-      facultyId: params.facultyId,
       updatedBy: params.userIdForOperation,
     });
 
@@ -90,8 +80,6 @@ export class InterviewerService {
     return new InterviewerResponseDto({
       userId: updated.userId,
       category: updated.category,
-      universityId: updated.universityId,
-      facultyId: updated.facultyId,
     });
   }
 
@@ -111,8 +99,6 @@ export class InterviewerService {
     interviewers: Array<{
       userId: string;
       category: InterviewerCategory;
-      universityId?: string;
-      facultyId?: string;
     }>;
     userIdForOperation: string;
   }): Promise<InterviewerResponseDto[]> {
@@ -123,8 +109,6 @@ export class InterviewerService {
     interviewers: Array<{
       userId: string;
       category: InterviewerCategory;
-      universityId?: string;
-      facultyId?: string;
     }>;
     userIdForOperation: string;
   }): Promise<InterviewerResponseDto[]> {

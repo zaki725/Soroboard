@@ -52,24 +52,6 @@ export class InterviewerDao {
             email: true,
           },
         },
-        university: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        faculty: {
-          select: {
-            id: true,
-            name: true,
-            university: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -77,17 +59,11 @@ export class InterviewerDao {
     });
 
     return interviewers.map((interviewer) => {
-      const linkedUniversity =
-        interviewer.faculty?.university ?? interviewer.university;
       return new InterviewerResponseDto({
         userId: interviewer.userId,
         category: interviewer.category,
         userName: `${interviewer.user.lastName} ${interviewer.user.firstName}`,
         userEmail: interviewer.user.email,
-        universityId: linkedUniversity?.id,
-        universityName: linkedUniversity?.name,
-        facultyId: interviewer.faculty?.id,
-        facultyName: interviewer.faculty?.name,
       });
     });
   }
@@ -107,24 +83,6 @@ export class InterviewerDao {
             email: true,
           },
         },
-        university: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        faculty: {
-          select: {
-            id: true,
-            name: true,
-            university: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
       },
     });
 
@@ -132,17 +90,11 @@ export class InterviewerDao {
       return null;
     }
 
-    const linkedUniversity =
-      interviewer.faculty?.university ?? interviewer.university;
     return new InterviewerResponseDto({
       userId: interviewer.userId,
       category: interviewer.category,
       userName: `${interviewer.user.lastName} ${interviewer.user.firstName}`,
       userEmail: interviewer.user.email,
-      universityId: linkedUniversity?.id,
-      universityName: linkedUniversity?.name,
-      facultyId: interviewer.faculty?.id,
-      facultyName: interviewer.faculty?.name,
     });
   }
 }

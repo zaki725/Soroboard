@@ -13,8 +13,6 @@ export class InterviewerMapper {
     return InterviewerEntity.create({
       userId: raw.userId,
       category: raw.category as InterviewerCategory,
-      universityId: raw.universityId ?? undefined,
-      facultyId: raw.facultyId ?? undefined,
       createdAt: raw.createdAt,
       createdBy: raw.createdBy ?? undefined,
       updatedAt: raw.updatedAt,
@@ -29,16 +27,12 @@ export class InterviewerMapper {
   static toPersistence(entity: InterviewerEntity): {
     userId: string;
     category: string;
-    universityId: string | null;
-    facultyId: string | null;
     createdBy: string;
     updatedBy: string;
   } {
     return {
       userId: entity.userId,
       category: entity.category,
-      universityId: entity.universityId ?? null,
-      facultyId: entity.facultyId ?? null,
       createdBy: entity.createdBy ?? '',
       updatedBy: entity.updatedBy,
     };
@@ -49,14 +43,10 @@ export class InterviewerMapper {
    */
   static toUpdatePersistence(entity: InterviewerEntity): {
     category: string;
-    universityId: string | null;
-    facultyId: string | null;
     updatedBy: string;
   } {
     return {
       category: entity.category,
-      universityId: entity.universityId ?? null,
-      facultyId: entity.facultyId ?? null,
       updatedBy: entity.updatedBy,
     };
   }

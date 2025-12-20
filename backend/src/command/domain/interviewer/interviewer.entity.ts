@@ -6,8 +6,6 @@ import { getCurrentDate } from '../../../common/utils/date.utils';
 interface InterviewerProps {
   userId: string;
   category: InterviewerCategory;
-  universityId?: string;
-  facultyId?: string;
   createdAt?: Date;
   createdBy?: string;
   updatedAt?: Date;
@@ -17,8 +15,6 @@ interface InterviewerProps {
 export class InterviewerEntity {
   readonly userId: string;
   private _category: InterviewerCategory;
-  private _universityId?: string;
-  private _facultyId?: string;
 
   readonly createdAt?: Date;
   readonly createdBy?: string;
@@ -30,8 +26,6 @@ export class InterviewerEntity {
 
     this.userId = props.userId;
     this._category = props.category;
-    this._universityId = props.universityId;
-    this._facultyId = props.facultyId;
     this.createdAt = props.createdAt;
     this.createdBy = props.createdBy;
     this._updatedAt = props.updatedAt;
@@ -47,12 +41,6 @@ export class InterviewerEntity {
 
   get category() {
     return this._category;
-  }
-  get universityId() {
-    return this._universityId;
-  }
-  get facultyId() {
-    return this._facultyId;
   }
   get updatedAt() {
     return this._updatedAt;
@@ -72,18 +60,6 @@ export class InterviewerEntity {
     this.markAsUpdated(params.updatedBy);
   }
 
-  /**
-   * 学歴情報の変更
-   */
-  public changeEducationalBackground(params: {
-    universityId?: string;
-    facultyId?: string;
-    updatedBy: string;
-  }): void {
-    this._universityId = params.universityId;
-    this._facultyId = params.facultyId;
-    this.markAsUpdated(params.updatedBy);
-  }
 
   private validateUserId(userId: string): void {
     if (!userId || userId.trim().length === 0) {

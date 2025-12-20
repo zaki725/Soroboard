@@ -5,8 +5,6 @@ import { seedRecruitYears } from './seeds/recruit-year.seed';
 import { seedJobCategories } from './seeds/job-category.seed';
 import { seedCompanies } from './seeds/company.seed';
 import { seedSelectionProcesses } from './seeds/selection-process.seed';
-import { seedUniversities } from './seeds/university.seed';
-import { seedDeviationValues } from './seeds/deviation-value.seed';
 import { seedLocations } from './seeds/location.seed';
 import { seedSchools } from './seeds/school.seed';
 import { seedTeachers } from './seeds/teacher.seed';
@@ -45,12 +43,6 @@ async function main() {
 
     // SelectionProcessを作成
     await seedSelectionProcesses({ prisma });
-    // Universityはマスタデータなので先に作成
-    await seedUniversities({ prisma });
-    console.log('');
-
-    // DeviationValueは後に作成
-    await seedDeviationValues({ prisma });
     console.log('');
 
     // Userを後で作成

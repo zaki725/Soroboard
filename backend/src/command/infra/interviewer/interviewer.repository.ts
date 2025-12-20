@@ -24,8 +24,6 @@ export class InterviewerRepository implements IInterviewerRepository {
         data: {
           userId: interviewer.userId,
           category: interviewer.category,
-          universityId: interviewer.universityId ?? null,
-          facultyId: interviewer.facultyId ?? null,
           createdBy: interviewer.createdBy,
           updatedBy: interviewer.updatedBy,
         },
@@ -72,8 +70,6 @@ export class InterviewerRepository implements IInterviewerRepository {
         where: { userId: interviewer.userId },
         data: {
           category: interviewer.category,
-          universityId: interviewer.universityId ?? null,
-          facultyId: interviewer.facultyId ?? null,
           updatedBy: interviewer.updatedBy,
         },
       });

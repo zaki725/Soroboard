@@ -53,8 +53,6 @@ export class InterviewerController {
     return this.interviewerService.create({
       userId: dto.userId,
       category: dto.category,
-      universityId: dto.universityId,
-      facultyId: dto.facultyId,
       userIdForOperation: userId,
     });
   }
@@ -78,8 +76,6 @@ export class InterviewerController {
     return this.interviewerService.update({
       userId: dto.userId,
       category: dto.category,
-      universityId: dto.universityId,
-      facultyId: dto.facultyId,
       userIdForOperation: userId,
     });
   }

@@ -22,8 +22,6 @@ export class InterviewerBulkService {
     interviewers: Array<{
       userId: string;
       category: InterviewerCategory;
-      universityId?: string;
-      facultyId?: string;
     }>;
     userIdForOperation: string;
   }): Promise<InterviewerResponseDto[]> {
@@ -42,8 +40,6 @@ export class InterviewerBulkService {
         const interviewerEntity = InterviewerEntity.create({
           userId: interviewerData.userId,
           category: interviewerData.category,
-          universityId: interviewerData.universityId,
-          facultyId: interviewerData.facultyId,
           createdBy: params.userIdForOperation,
           updatedBy: params.userIdForOperation,
         });
@@ -55,8 +51,6 @@ export class InterviewerBulkService {
           new InterviewerResponseDto({
             userId: created.userId,
             category: created.category,
-            universityId: created.universityId,
-            facultyId: created.facultyId,
           }),
         );
       }
@@ -69,8 +63,6 @@ export class InterviewerBulkService {
     interviewers: Array<{
       userId: string;
       category: InterviewerCategory;
-      universityId?: string;
-      facultyId?: string;
     }>;
     userIdForOperation: string;
   }): Promise<InterviewerResponseDto[]> {
@@ -97,8 +89,6 @@ export class InterviewerBulkService {
         const interviewerEntity = InterviewerEntity.create({
           userId: interviewerData.userId,
           category: interviewerData.category,
-          universityId: interviewerData.universityId,
-          facultyId: interviewerData.facultyId,
           updatedBy: params.userIdForOperation,
         });
 
@@ -108,8 +98,6 @@ export class InterviewerBulkService {
           new InterviewerResponseDto({
             userId: updated.userId,
             category: updated.category,
-            universityId: updated.universityId,
-            facultyId: updated.facultyId,
           }),
         );
       }
