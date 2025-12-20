@@ -6,6 +6,7 @@ import { loginRequestSchema } from '../../dto/auth/auth.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
 import { InternalServerError } from '../../../common/errors/internal-server.error';
 import { INTERNAL_SERVER_ERROR } from '../../../common/constants';
+import { CustomLoggerService } from '../../../config/custom-logger.service';
 
 type RequestWithSession = Request & {
   session: {
@@ -20,7 +21,10 @@ type RequestWithSession = Request & {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: CustomLoggerService,
+  ) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -39,6 +43,11 @@ export class AuthController {
     await new Promise<void>((resolve, reject) => {
       req.session.save((err) => {
         if (err) {
+          this.logger.error(
+            err instanceof Error ? err : new Error(String(err)),
+            undefined,
+            'AuthController',
+          );
           reject(new InternalServerError(INTERNAL_SERVER_ERROR));
         } else {
           resolve();
