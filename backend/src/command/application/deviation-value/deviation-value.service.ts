@@ -1,12 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { IDeviationValueRepository } from '../../domain/deviation-value/deviation-value.repository.interface';
 import { DeviationValueEntity } from '../../domain/deviation-value/deviation-value.entity';
-import { DeviationValueResponseDto } from '../../../query/dto/faculty/faculty.dto';
+import { DeviationValueResponseDto } from '../../../query/dto/deviation-value/deviation-value.dto';
 import { INJECTION_TOKENS } from '../../constants/injection-tokens';
 import { BadRequestError } from '../../../common/errors/bad-request.error';
 import { NotFoundError } from '../../../common/errors/not-found.error';
 import { CREATE, UPDATE, DELETE } from '../../../common/constants';
-import { FacultyDao } from '../../../query/dao/faculty/faculty.dao';
 
 type CreateParams = {
   facultyId: string;
@@ -30,26 +29,11 @@ export class DeviationValueService {
   constructor(
     @Inject(INJECTION_TOKENS.IDeviationValueRepository)
     private readonly deviationValueRepository: IDeviationValueRepository,
-    private readonly facultyDao: FacultyDao,
   ) {}
 
   async create(params: CreateParams): Promise<DeviationValueResponseDto> {
     if (!params.userId) {
       throw new BadRequestError(CREATE.USER_ID_REQUIRED);
-    }
-
-    const faculty = await this.facultyDao.findOne({
-      id: params.facultyId,
-    });
-
-    if (!faculty) {
-      throw new NotFoundError('学部', params.facultyId);
-    }
-
-    const existingDeviationValue = faculty.deviationValue;
-
-    if (existingDeviationValue && 'id' in existingDeviationValue) {
-      throw new BadRequestError('この学部には既に偏差値が登録されています');
     }
 
     const createEntity = DeviationValueEntity.createNew({
@@ -135,21 +119,8 @@ export class DeviationValueService {
     value: number;
     userId: string;
   }): Promise<void> {
-    const existingFaculties = await this.facultyDao.findAllByUniversityId({
-      universityId,
-    });
-    const existingFaculty = existingFaculties.find(
-      (f) => f.name === facultyName,
-    );
-
-    if (!existingFaculty) {
-      return;
-    }
-
-    await this.create({
-      facultyId: existingFaculty.id,
-      value,
-      userId,
-    });
+    // facultyが削除されたため、このメソッドは使用不可
+    // 必要に応じて実装を変更してください
+    throw new BadRequestError('この機能は使用できません');
   }
 }

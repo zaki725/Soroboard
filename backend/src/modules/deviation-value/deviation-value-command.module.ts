@@ -3,10 +3,8 @@ import { DeviationValueController } from '../../command/controller/deviation-val
 import { DeviationValueService } from '../../command/application/deviation-value/deviation-value.service';
 import { DeviationValueRepository } from '../../command/infra/deviation-value/deviation-value.repository';
 import { INJECTION_TOKENS } from '../../command/constants/injection-tokens';
-import { FacultyQueryModule } from '../faculty/faculty-query.module';
-
 @Module({
-  imports: [FacultyQueryModule],
+  imports: [],
   controllers: [DeviationValueController],
   providers: [
     DeviationValueService,

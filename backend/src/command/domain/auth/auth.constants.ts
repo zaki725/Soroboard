@@ -6,3 +6,4 @@ export const ADMIN_DISPLAY_NAME = {
   lastName: '開発者',
 } as const;
 
+

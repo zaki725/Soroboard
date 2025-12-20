@@ -1,10 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import type { IUniversityRepository } from '../../domain/university/university.repository.interface';
 import type { IUniversityRankRepository } from '../../domain/university-rank/university-rank.repository.interface';
-import type { IFacultyRepository } from '../../domain/faculty/faculty.repository.interface';
 import { UniversityEntity } from '../../domain/university/university.entity';
 import { UniversityRankEntity } from '../../domain/university-rank/university-rank.entity';
-import { FacultyEntity } from '../../domain/faculty/faculty.entity';
 import { UniversityResponseDto } from '../../../query/dto/university/university.dto';
 import { INJECTION_TOKENS } from '../../constants/injection-tokens';
 import { BadRequestError } from '../../../common/errors/bad-request.error';
@@ -13,7 +11,6 @@ import { UniversityRankLevel } from '@prisma/client';
 import { UniversityDao } from '../../../query/dao/university/university.dao';
 import { PrismaService } from '../../../prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { DeviationValueService } from '../deviation-value/deviation-value.service';
 
 @Injectable()
 export class UniversityBulkService {
@@ -22,11 +19,8 @@ export class UniversityBulkService {
     private readonly universityRepository: IUniversityRepository,
     @Inject(INJECTION_TOKENS.IUniversityRankRepository)
     private readonly universityRankRepository: IUniversityRankRepository,
-    @Inject(INJECTION_TOKENS.IFacultyRepository)
-    private readonly facultyRepository: IFacultyRepository,
     private readonly universityDao: UniversityDao,
     private readonly prismaService: PrismaService,
-    private readonly deviationValueService: DeviationValueService,
   ) {}
 
   async bulkCreate(params: {
@@ -54,14 +48,8 @@ export class UniversityBulkService {
         userId: params.userId,
       });
 
-      for (const facultyData of params.faculties) {
-        await this.createFacultyWithDeviationValue({
-          universityId: university.id,
-          facultyName: facultyData.name,
-          deviationValue: facultyData.deviationValue,
-          userId: params.userId,
-        });
-      }
+      // facultyが削除されたため、faculty関連の処理はスキップ
+      // 必要に応じて実装を変更してください
 
       return this.toResponseDtoWithRank(university.id);
     });
@@ -142,67 +130,6 @@ export class UniversityBulkService {
     }
   }
 
-  private async createFacultyWithDeviationValue({
-    universityId,
-    facultyName,
-    deviationValue,
-    userId,
-  }: {
-    universityId: string;
-    facultyName: string;
-    deviationValue?: number;
-    userId: string;
-  }) {
-    try {
-      const createFacultyEntity = FacultyEntity.createNew({
-        name: facultyName,
-        universityId,
-        createdBy: userId,
-        updatedBy: userId,
-      });
-      const faculty = await this.facultyRepository.create(createFacultyEntity);
-
-      if (deviationValue !== undefined) {
-        await this.deviationValueService.createOrUpdateByFacultyId({
-          facultyId: faculty.id,
-          value: deviationValue,
-          userId,
-        });
-      }
-    } catch (error) {
-      // Check for duplicate faculty error (P2002 unique constraint)
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        if (deviationValue !== undefined) {
-          await this.deviationValueService.updateByFacultyName({
-            universityId,
-            facultyName,
-            value: deviationValue,
-            userId,
-          });
-        }
-        return;
-      }
-      // Also check for BadRequestError with duplicate message as fallback
-      if (
-        error instanceof BadRequestError &&
-        error.message.includes('既に登録されています')
-      ) {
-        if (deviationValue !== undefined) {
-          await this.deviationValueService.updateByFacultyName({
-            universityId,
-            facultyName,
-            value: deviationValue,
-            userId,
-          });
-        }
-        return;
-      }
-      throw error;
-    }
-  }
 
   private async toResponseDtoWithRank(
     universityId: string,

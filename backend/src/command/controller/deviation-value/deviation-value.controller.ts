@@ -19,7 +19,7 @@ import {
   createDeviationValueRequestSchema,
 } from '../../dto/deviation-value/deviation-value.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
-import { DeviationValueResponseDto } from '../../../query/dto/faculty/faculty.dto';
+import { DeviationValueResponseDto } from '../../../query/dto/deviation-value/deviation-value.dto';
 import { z } from 'zod';
 
 const deviationValueIdParamSchema = z.string().min(1, '偏差値IDは必須です');

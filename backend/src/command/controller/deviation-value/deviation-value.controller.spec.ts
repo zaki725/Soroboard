@@ -5,7 +5,7 @@ import { DeviationValueCommandModule } from '../../../modules/deviation-value/de
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { LoggerModule } from '../../../config/logger.module';
 import { PrismaService } from '../../../prisma.service';
-import { DeviationValueResponseDto } from '../../../query/dto/faculty/faculty.dto';
+import { DeviationValueResponseDto } from '../../../query/dto/deviation-value/deviation-value.dto';
 
 describe('DeviationValueController (Command) (e2e)', () => {
   let app: INestApplication;
