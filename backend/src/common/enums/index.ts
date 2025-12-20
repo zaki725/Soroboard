@@ -3,13 +3,6 @@
  * すべてのENUM値はここから取得すること
  */
 
-// 面接官カテゴリ
-export type InterviewerCategory = 'フロント' | '現場社員';
-export const INTERVIEWER_CATEGORIES: InterviewerCategory[] = [
-  'フロント',
-  '現場社員',
-];
-
 // ユーザー権限
 export type UserRole = 'user' | 'admin' | 'master';
 export const USER_ROLES: UserRole[] = ['user', 'admin', 'master'];

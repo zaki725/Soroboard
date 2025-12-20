@@ -3,8 +3,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { LoggerModule } from './config/logger.module';
 import { RecruitYearModule } from './modules/recruit-year/recruit-year.module';
 import { UserModule } from './modules/user/user.module';
-import { CompanyModule } from './modules/company/company.module';
-import { InterviewerModule } from './modules/interviewer/interviewer.module';
 import { SearchConditionModule } from './modules/search-condition/search-condition.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -15,8 +13,6 @@ import { AuthModule } from './modules/auth/auth.module';
     PrismaModule,
     RecruitYearModule,
     UserModule,
-    CompanyModule,
-    InterviewerModule,
     SearchConditionModule,
     TeacherModule,
     AuthModule,

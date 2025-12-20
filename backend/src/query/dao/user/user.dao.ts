@@ -22,11 +22,6 @@ export class UserDao {
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
-        interviewer: {
-          select: {
-            category: true,
-          },
-        },
         department: {
           select: {
             id: true,
@@ -52,7 +47,6 @@ export class UserDao {
       createdBy: user.createdBy,
       updatedAt: user.updatedAt,
       updatedBy: user.updatedBy,
-      isInterviewer: user.interviewer !== null,
       departmentName: user.department?.name ?? null,
     });
   }
@@ -102,11 +96,6 @@ export class UserDao {
         skip,
         take: pageSize,
         include: {
-          interviewer: {
-            select: {
-              category: true,
-            },
-          },
           department: {
             select: {
               id: true,
@@ -135,7 +124,6 @@ export class UserDao {
           createdBy: user.createdBy,
           updatedAt: user.updatedAt,
           updatedBy: user.updatedBy,
-          isInterviewer: user.interviewer !== null,
           departmentName: user.department?.name ?? null,
         }),
     );
@@ -216,7 +204,6 @@ export class UserDao {
           createdBy: user.createdBy,
           updatedAt: user.updatedAt,
           updatedBy: user.updatedBy,
-          isInterviewer: user.interviewer !== null,
           departmentName: user.department?.name ?? null,
         }),
     );
