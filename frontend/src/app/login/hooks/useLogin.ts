@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import type { UseFormSetError } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import { apiClient } from '@/libs/api-client';
 import { handleFormError } from '@/libs/error-handler';
 import { errorMessages } from '@/constants/error-messages';
@@ -20,6 +19,7 @@ export const useLogin = () => {
   const router = useRouter();
   const { mutate } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = useCallback(
     async (
@@ -28,6 +28,7 @@ export const useLogin = () => {
     ) => {
       try {
         setIsLoading(true);
+        setError(null);
         const response = await apiClient<LoginResponse>('/auth/login', {
           method: 'POST',
           body: {
@@ -48,7 +49,7 @@ export const useLogin = () => {
         handleFormError(
           err,
           setFormError,
-          (message) => toast.error(message),
+          setError,
           errorMessages.loginFailed,
         );
         return;
@@ -62,5 +63,6 @@ export const useLogin = () => {
   return {
     handleSubmit,
     isLoading,
+    error,
   };
 };
