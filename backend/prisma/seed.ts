@@ -8,6 +8,7 @@ import { seedSelectionProcesses } from './seeds/selection-process.seed';
 import { seedLocations } from './seeds/location.seed';
 import { seedSchools } from './seeds/school.seed';
 import { seedTeachers } from './seeds/teacher.seed';
+import { seedStudents } from './seeds/student.seed';
 
 // DATABASE_URLが未設定の場合はデフォルト値を設定
 if (!process.env.DATABASE_URL) {
@@ -55,6 +56,10 @@ async function main() {
 
     // Teacherを後で作成（Schoolに依存）
     await seedTeachers({ prisma });
+    console.log('');
+
+    // Studentを後で作成（Schoolに依存）
+    await seedStudents({ prisma });
     console.log('');
 
     // AuthUserを後で作成（Teacherに依存）

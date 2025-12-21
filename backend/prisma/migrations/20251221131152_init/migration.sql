@@ -31,6 +31,9 @@ CREATE TYPE "TeacherRole" AS ENUM ('OWNER', 'STAFF');
 -- CreateEnum
 CREATE TYPE "AuthUserRole" AS ENUM ('TEACHER', 'ADMIN');
 
+-- CreateEnum
+CREATE TYPE "StudentStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'WITHDRAWN');
+
 -- CreateTable
 CREATE TABLE "recruit_years" (
     "recruit_year" INTEGER NOT NULL,
@@ -83,6 +86,28 @@ CREATE TABLE "schools" (
     "updated_by" TEXT NOT NULL,
 
     CONSTRAINT "schools_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "students" (
+    "id" TEXT NOT NULL,
+    "school_id" TEXT NOT NULL,
+    "student_no" TEXT,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "first_name_kana" TEXT NOT NULL,
+    "last_name_kana" TEXT NOT NULL,
+    "birth_date" DATE,
+    "status" "StudentStatus" NOT NULL DEFAULT 'ACTIVE',
+    "joined_at" TIMESTAMPTZ NOT NULL,
+    "left_at" TIMESTAMPTZ,
+    "note" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_by" TEXT NOT NULL,
+
+    CONSTRAINT "students_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -352,6 +377,9 @@ CREATE UNIQUE INDEX "departments_name_key" ON "departments"("name");
 CREATE UNIQUE INDEX "schools_name_key" ON "schools"("name");
 
 -- CreateIndex
+CREATE INDEX "students_school_id_idx" ON "students"("school_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "teachers_email_key" ON "teachers"("email");
 
 -- CreateIndex
@@ -387,11 +415,11 @@ CREATE UNIQUE INDEX "search_conditions_form_type_recruit_year_id_name_key" ON "s
 -- CreateIndex
 CREATE INDEX "session_expire_idx" ON "session"("expire");
 
--- CreateIndex (部分ユニークインデックス: ソフトデリートされたレコードを除外)
-CREATE UNIQUE INDEX "auth_users_email_key" ON "auth_users"("email") WHERE "deleted_at" IS NULL;
-
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_recruit_year_id_fkey" FOREIGN KEY ("recruit_year_id") REFERENCES "recruit_years"("recruit_year") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "students" ADD CONSTRAINT "students_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "teachers" ADD CONSTRAINT "teachers_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "schools"("id") ON DELETE CASCADE ON UPDATE CASCADE;
