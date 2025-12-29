@@ -39,5 +39,8 @@ export class StudentResponseDto {
 
   @ApiProperty({ description: 'メモ', nullable: true, required: false })
   note: string | null;
+
+  @ApiProperty({ description: FIELD_NAME.SCHOOL_ID })
+  schoolId: string;
 }
 

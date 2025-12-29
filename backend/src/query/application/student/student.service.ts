@@ -37,6 +37,7 @@ export class StudentService {
       joinedAt: student.joinedAt,
       leftAt: student.leftAt,
       note: student.note,
+      schoolId: student.schoolId,
     });
   }
 }
