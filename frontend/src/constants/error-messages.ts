@@ -29,4 +29,6 @@ export const errorMessages = {
   // 共通
   requestFailed: 'リクエストに失敗しました',
   unexpectedError: '予期せぬエラーが発生しました',
+  responseEmpty: 'レスポンスが空です',
+  jsonParseFailed: 'JSONのパースに失敗しました',
 } as const;

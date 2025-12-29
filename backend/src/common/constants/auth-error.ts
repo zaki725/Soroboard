@@ -9,3 +9,5 @@
 export const INVALID_CREDENTIALS =
   'メールアドレスまたはパスワードが正しくありません';
 
+export const AUTHENTICATION_REQUIRED = '認証が必要です';
+

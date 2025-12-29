@@ -1,13 +1,13 @@
 'use client';
 
 import { useForm, FormProvider } from 'react-hook-form';
-import { TextField } from '@/components/form';
+import { TextField, FormError } from '@/components/form';
 import { Button, PageContainer, Title } from '@/components/ui';
 import { useLogin } from './hooks/useLogin';
 import type { LoginFormData } from './types/login-form';
 
 export default function LoginPage() {
-  const { handleSubmit: handleLoginSubmit, isLoading } = useLogin();
+  const { handleSubmit: handleLoginSubmit, isLoading, error } = useLogin();
 
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -29,6 +29,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
           <FormProvider {...methods}>
             <form onSubmit={onSubmit} noValidate className="space-y-6">
+              <FormError error={error} />
               <div className="space-y-4">
                 <TextField
                   name="email"
