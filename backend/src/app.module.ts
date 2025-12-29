@@ -5,6 +5,7 @@ import { RecruitYearModule } from './modules/recruit-year/recruit-year.module';
 import { UserModule } from './modules/user/user.module';
 import { SearchConditionModule } from './modules/search-condition/search-condition.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
+import { StudentModule } from './modules/student/student.module';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { AuthModule } from './modules/auth/auth.module';
     UserModule,
     SearchConditionModule,
     TeacherModule,
+    StudentModule,
     AuthModule,
   ],
   controllers: [],
