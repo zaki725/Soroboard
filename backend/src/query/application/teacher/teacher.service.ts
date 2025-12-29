@@ -3,6 +3,7 @@ import { TeacherDao } from '../../dao/teacher/teacher.dao';
 import { TeacherResponseDto } from '../../dto/teacher/teacher-response.dto';
 import { NotFoundError } from '../../../common/errors/not-found.error';
 import { RESOURCE_NAME } from '../../../common/constants';
+import { Teacher } from '@prisma/client';
 
 @Injectable()
 export class TeacherService {
@@ -29,7 +30,7 @@ export class TeacherService {
     return this.toDto(teacher);
   }
 
-  private toDto(teacher: NonNullable<Awaited<ReturnType<TeacherDao['findOne']>>>): TeacherResponseDto {
+  private toDto(teacher: Teacher): TeacherResponseDto {
     return new TeacherResponseDto({
       id: teacher.id,
       email: teacher.email,

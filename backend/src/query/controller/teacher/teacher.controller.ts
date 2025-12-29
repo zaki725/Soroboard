@@ -7,8 +7,8 @@ import {
   type TeacherListQueryDto,
 } from '../../dto/teacher/teacher-list-query.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
-import { REQUIRED_FIELD, FIELD_NAME } from '../../../common/constants';
-import { z } from 'zod';
+import { FIELD_NAME } from '../../../common/constants';
+import { teacherIdParamSchema } from '../../../common/dto/id-param.dto';
 
 @ApiTags('teachers')
 @Controller('teachers')
@@ -43,10 +43,7 @@ export class TeacherController {
   })
   @ApiResponse({ status: 404, description: '先生が見つかりません' })
   async findOne(
-    @Param(
-      'id',
-      new ZodValidationPipe(z.string().min(1, REQUIRED_FIELD(FIELD_NAME.TEACHER_ID))),
-    )
+    @Param('id', new ZodValidationPipe(teacherIdParamSchema))
     id: string,
   ): Promise<TeacherResponseDto> {
     return this.teacherService.findOne({ id });

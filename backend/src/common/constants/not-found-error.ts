@@ -7,6 +7,7 @@
  */
 export const RESOURCE_NAME = {
   TEACHER: '先生',
+  STUDENT: '生徒',
 } as const;
 
 export const getResourceNotFound = (

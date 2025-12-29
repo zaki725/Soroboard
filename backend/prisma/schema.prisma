@@ -79,6 +79,12 @@ enum AuthUserRole {
   ADMIN
 }
 
+enum StudentStatus {
+  ACTIVE     // 在籍
+  SUSPENDED  // 休会
+  WITHDRAWN  // 退会
+}
+
 // ############################################################################
 //  ORGANIZATION MASTERS (組織・年度・職種)
 // ############################################################################
@@ -151,6 +157,7 @@ model School {
 
   // Relations
   teachers Teacher[]
+  students Student[]
 
   // Audit
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -159,6 +166,34 @@ model School {
   updatedBy String   @map("updated_by")
 
   @@map("schools")
+}
+
+/// 生徒管理
+model Student {
+  id           String        @id @default(ulid())
+  schoolId     String        @map("school_id")
+  studentNo    String?       @map("student_no") // 教室内の管理番号（任意）
+  firstName    String        @map("first_name")
+  lastName     String        @map("last_name")
+  firstNameKana String      @map("first_name_kana")
+  lastNameKana  String      @map("last_name_kana")
+  birthDate    DateTime?     @map("birth_date") @db.Date
+  status       StudentStatus @default(ACTIVE)
+  joinedAt     DateTime     @map("joined_at")  @db.Timestamptz
+  leftAt       DateTime?     @map("left_at")    @db.Timestamptz
+  note         String?       @db.Text
+
+  // Relations
+  school       School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  // Audit
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdBy String   @map("created_by")
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  updatedBy String   @map("updated_by")
+
+  @@index([schoolId])
+  @@map("students")
 }
 
 /// 先生管理マスター
