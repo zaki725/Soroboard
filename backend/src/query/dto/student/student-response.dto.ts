@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StudentStatus } from '@prisma/client';
+import { FIELD_NAME } from '../../../common/constants';
 
 export class StudentResponseDto {
   constructor(partial: Partial<StudentResponseDto>) {
     Object.assign(this, partial);
   }
 
-  @ApiProperty({ description: '生徒ID' })
+  @ApiProperty({ description: FIELD_NAME.STUDENT_ID })
   id: string;
 
   @ApiProperty({ description: '教室内の管理番号', nullable: true, required: false })
