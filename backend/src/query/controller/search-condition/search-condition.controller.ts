@@ -14,13 +14,12 @@ export class SearchConditionController {
   ) {}
 
   @Get()
-  async findByFormTypeAndRecruitYearId(
+  async findByFormType(
     @Query(new ZodValidationPipe(searchConditionListQuerySchema))
     query: SearchConditionListQueryDto,
   ): Promise<SearchConditionResponseDto[]> {
-    return this.searchConditionService.findByFormTypeAndRecruitYearId({
+    return this.searchConditionService.findByFormType({
       formType: query.formType,
-      recruitYearId: query.recruitYearId,
     });
   }
 }

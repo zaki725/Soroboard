@@ -2,11 +2,7 @@
 
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import {
-  RecruitYearProvider,
-  useRecruitYear,
-} from '@/contexts/RecruitYearContext';
-import { UserProvider } from '@/contexts/UserContext';
+import { UserProvider, useUser } from '@/contexts/UserContext';
 import { BreadcrumbProvider } from '@/contexts/BreadcrumbContext';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -17,15 +13,27 @@ type ProvidersProps = {
 };
 
 const ProvidersContent = ({ children }: ProvidersProps) => {
-  const { selectedRecruitYear, isLoading } = useRecruitYear();
+  const { isLoading: userIsLoading } = useUser();
+
+  // ユーザーの認証状態が読み込み中の場合はローディングを表示
+  if (userIsLoading) {
+    return (
+      <>
+        <Toaster position="top-right" />
+        <Header />
+        <main className="flex-1 min-h-0 flex flex-col">
+          <Loading />
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
       <Toaster position="top-right" />
       <Header />
-      <main className="flex-1 min-h-0 flex flex-col">
-        {isLoading || !selectedRecruitYear ? <Loading /> : children}
-      </main>
+      <main className="flex-1 min-h-0 flex flex-col">{children}</main>
       <Footer />
     </>
   );
@@ -87,12 +95,10 @@ export const Providers = ({ children }: ProvidersProps) => {
   }, []);
 
   return (
-    <RecruitYearProvider>
-      <UserProvider>
-        <BreadcrumbProvider>
-          <ProvidersContent>{children}</ProvidersContent>
-        </BreadcrumbProvider>
-      </UserProvider>
-    </RecruitYearProvider>
+    <UserProvider>
+      <BreadcrumbProvider>
+        <ProvidersContent>{children}</ProvidersContent>
+      </BreadcrumbProvider>
+    </UserProvider>
   );
 };

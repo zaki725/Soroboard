@@ -1,12 +1,9 @@
 'use client';
 
-import { useRecruitYear } from '@/contexts/RecruitYearContext';
 import { themeColors } from '@/constants/theme';
 
 export const Footer = () => {
-  const { selectedRecruitYear } = useRecruitYear();
-  const backgroundColor =
-    selectedRecruitYear?.themeColor || themeColors.primary;
+  const backgroundColor = themeColors.primary;
 
   return (
     <footer

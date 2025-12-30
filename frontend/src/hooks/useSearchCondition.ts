@@ -8,7 +8,6 @@ import type {
   CreateSearchConditionRequestDto,
   UpdateSearchConditionRequestDto,
 } from '@/types/search-condition';
-import { useRecruitYear } from '@/contexts/RecruitYearContext';
 import { useAuth } from '@/hooks/useAuth';
 
 type UseSearchConditionParams = {
@@ -24,7 +23,6 @@ export const useSearchCondition = ({
 }: UseSearchConditionParams) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { selectedRecruitYear } = useRecruitYear();
   const { user } = useAuth();
   const [savedConditions, setSavedConditions] = useState<
     SearchConditionResponseDto[]
@@ -39,12 +37,10 @@ export const useSearchCondition = ({
   }, [searchParams, buildUrlParamsFn]);
 
   const fetchSavedConditions = useCallback(async () => {
-    if (!selectedRecruitYear) return;
-
     try {
       setIsLoading(true);
       const data = await apiClient<SearchConditionResponseDto[]>(
-        `/search-conditions?formType=${formType}&recruitYearId=${selectedRecruitYear.recruitYear}`,
+        `/search-conditions?formType=${formType}`,
       );
       setSavedConditions(data);
       setFilteredConditions(data);
@@ -57,16 +53,14 @@ export const useSearchCondition = ({
     } finally {
       setIsLoading(false);
     }
-  }, [selectedRecruitYear, formType]);
+  }, [formType]);
 
   const searchConditions = useCallback(
     async (searchParams: { name?: string }) => {
-      if (!selectedRecruitYear) return;
-
       try {
         setIsLoading(true);
         const data = await apiClient<SearchConditionResponseDto[]>(
-          `/search-conditions?formType=${formType}&recruitYearId=${selectedRecruitYear.recruitYear}`,
+          `/search-conditions?formType=${formType}`,
         );
 
         let filtered = data;
@@ -90,7 +84,7 @@ export const useSearchCondition = ({
         setIsLoading(false);
       }
     },
-    [selectedRecruitYear, formType],
+    [formType],
   );
 
   const saveCondition = useCallback(
@@ -100,18 +94,12 @@ export const useSearchCondition = ({
         return;
       }
 
-      if (!selectedRecruitYear) {
-        toast.error('対象年度が設定されていません');
-        return;
-      }
-
       try {
         const urlParams = buildUrlParams();
         const request: CreateSearchConditionRequestDto = {
           formType,
           name,
           urlParams,
-          recruitYearId: selectedRecruitYear.recruitYear,
         };
 
         await apiClient<SearchConditionResponseDto>('/search-conditions', {
@@ -130,24 +118,13 @@ export const useSearchCondition = ({
         throw err;
       }
     },
-    [
-      user?.id,
-      buildUrlParams,
-      selectedRecruitYear,
-      fetchSavedConditions,
-      formType,
-    ],
+    [user?.id, buildUrlParams, fetchSavedConditions, formType],
   );
 
   const updateCondition = useCallback(
     async ({ id, name }: { id: string; name: string }) => {
       if (!user?.id) {
         toast.error('ログインが必要です');
-        return;
-      }
-
-      if (!selectedRecruitYear) {
-        toast.error('対象年度が設定されていません');
         return;
       }
 
@@ -176,7 +153,7 @@ export const useSearchCondition = ({
         throw err;
       }
     },
-    [user?.id, selectedRecruitYear, fetchSavedConditions],
+    [user?.id, fetchSavedConditions],
   );
 
   const deleteCondition = useCallback(
