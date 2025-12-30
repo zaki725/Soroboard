@@ -6,18 +6,14 @@ import { SearchConditionResponseDto } from '../../dto/search-condition/search-co
 export class SearchConditionService {
   constructor(private readonly searchConditionDao: SearchConditionDao) {}
 
-  async findByFormTypeAndRecruitYearId({
+  async findByFormType({
     formType,
-    recruitYearId,
   }: {
     formType: string;
-    recruitYearId: number;
   }): Promise<SearchConditionResponseDto[]> {
-    const searchConditions =
-      await this.searchConditionDao.findByFormTypeAndRecruitYearId({
-        formType,
-        recruitYearId,
-      });
+    const searchConditions = await this.searchConditionDao.findByFormType({
+      formType,
+    });
 
     return searchConditions;
   }

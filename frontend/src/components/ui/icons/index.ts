@@ -10,7 +10,6 @@ export { DashboardIcon } from './DashboardIcon';
 export { ApplicantIcon } from './ApplicantIcon';
 export { UserIcon } from './UserIcon';
 export { UserManagementIcon } from './UserManagementIcon';
-export { RecruitYearIcon } from './RecruitYearIcon';
 export { CompanyIcon } from './CompanyIcon';
 export { BulkIcon } from './BulkIcon';
 export { DownloadIcon } from './DownloadIcon';

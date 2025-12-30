@@ -7,16 +7,13 @@ import { SearchConditionResponseDto } from '../../dto/search-condition/search-co
 export class SearchConditionDao {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByFormTypeAndRecruitYearId({
+  async findByFormType({
     formType,
-    recruitYearId,
   }: {
     formType: string;
-    recruitYearId: number;
   }): Promise<SearchConditionResponseDto[]> {
     const where: Prisma.SearchConditionWhereInput = {
       formType,
-      recruitYearId,
     };
 
     const searchConditions = await this.prisma.searchCondition.findMany({

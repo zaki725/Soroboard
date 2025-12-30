@@ -1,6 +1,5 @@
 'use client';
 
-import { useRecruitYear } from '@/contexts/RecruitYearContext';
 import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
 import { themeColors } from '@/constants/theme';
 import { Breadcrumb } from './Breadcrumb';
@@ -8,15 +7,11 @@ import { HamburgerMenu } from './HamburgerMenu';
 import { NavigationMenu } from './NavigationMenu';
 import { HeaderLogo } from './HeaderLogo';
 import { HeaderDateAndRcdx } from './HeaderDateAndRcdx';
-import { RecruitYearSelect } from './RecruitYearSelect';
 import { UserProfile } from './UserProfile';
 
 export const Header = () => {
-  const { selectedRecruitYear } = useRecruitYear();
   const { items: breadcrumbItems } = useBreadcrumb();
-
-  const backgroundColor =
-    selectedRecruitYear?.themeColor || themeColors.primary;
+  const backgroundColor = themeColors.primary;
 
   return (
     <>
@@ -36,7 +31,6 @@ export const Header = () => {
             </div>
 
             <div className="flex items-center gap-6">
-              <RecruitYearSelect />
               <UserProfile />
             </div>
           </div>
