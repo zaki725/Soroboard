@@ -35,3 +35,15 @@ export const LOCATION_TYPES: LocationType[] = [
   '対面',
   'オンライン_対面',
 ];
+
+// 先生のロール
+export type TeacherRole = 'OWNER' | 'STAFF';
+export const TEACHER_ROLES: TeacherRole[] = ['OWNER', 'STAFF'];
+
+// 生徒の在籍状況
+export type StudentStatus = 'ACTIVE' | 'SUSPENDED' | 'WITHDRAWN';
+export const STUDENT_STATUSES: StudentStatus[] = [
+  'ACTIVE',
+  'SUSPENDED',
+  'WITHDRAWN',
+];
