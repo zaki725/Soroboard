@@ -2,16 +2,9 @@
 
 import { Loading, Title, Table, PageContainer } from '@/components/ui';
 import { FormError } from '@/components/form';
+import { MissingSchoolIdNotice } from '@/components/features';
 import { useTeacherList } from '../hooks/useTeacherList';
 import { getTableColumns } from './TeacherTableColumns';
-
-const MissingSchoolIdNotice = () => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-      <p className="text-gray-600">塾IDが指定されていません。</p>
-    </div>
-  );
-};
 
 export const TeacherManagement = () => {
   const { teachers, isLoading, error, schoolId } = useTeacherList();
