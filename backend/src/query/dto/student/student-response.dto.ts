@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { StudentStatus } from '@prisma/client';
+import type { StudentStatus } from '../../../common/enums';
+import { STUDENT_STATUSES } from '../../../common/enums';
 import { FIELD_NAME } from '../../../common/constants';
 
 export class StudentResponseDto {
@@ -28,7 +29,7 @@ export class StudentResponseDto {
   @ApiProperty({ description: '生年月日', nullable: true, required: false })
   birthDate: Date | null;
 
-  @ApiProperty({ description: '在籍状況', enum: StudentStatus })
+  @ApiProperty({ description: '在籍状況', enum: STUDENT_STATUSES })
   status: StudentStatus;
 
   @ApiProperty({ description: '入会日' })
