@@ -7,10 +7,10 @@ export type StudentResponseDto = {
   lastName: string;
   firstNameKana: string;
   lastNameKana: string;
-  birthDate: Date | null;
+  birthDate: string | null;
   status: StudentStatus;
-  joinedAt: Date;
-  leftAt: Date | null;
+  joinedAt: string;
+  leftAt: string | null;
   note: string | null;
   schoolId: string;
 };

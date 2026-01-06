@@ -5,7 +5,7 @@ import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { StudentManagement } from '@/features/student-management/components/StudentManagement';
 
-export default function StudentsPage() {
+const StudentsPage = () => {
   const { setItems } = useBreadcrumb();
   usePageTitle('生徒管理');
 
@@ -14,4 +14,6 @@ export default function StudentsPage() {
   }, [setItems]);
 
   return <StudentManagement />;
-}
+};
+
+export default StudentsPage;
