@@ -4,7 +4,7 @@ import { statusLabelMap } from '../constants/student.constants';
 
 export const getTableColumns = (): TableColumn<StudentResponseDto>[] => {
   return [
-    { key: 'studentNo', label: '生徒番号',},
+    { key: 'studentNo', label: '生徒番号' },
     { key: 'firstName', label: '姓' },
     { key: 'lastName', label: '名' },
     {
