@@ -39,11 +39,15 @@ export const LOCATION_TYPES: LocationType[] = [
 // 先生のロール
 export type TeacherRole = 'OWNER' | 'STAFF';
 export const TEACHER_ROLES: TeacherRole[] = ['OWNER', 'STAFF'];
+export const TEACHER_ROLE = {
+  OWNER: 'OWNER',
+  STAFF: 'STAFF',
+} as const;
 
 // 生徒の在籍状況
 export type StudentStatus = 'ACTIVE' | 'SUSPENDED' | 'WITHDRAWN';
-export const STUDENT_STATUSES: StudentStatus[] = [
-  'ACTIVE',
-  'SUSPENDED',
-  'WITHDRAWN',
-];
+export const STUDENT_STATUS = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  WITHDRAWN: 'WITHDRAWN',
+} as const;

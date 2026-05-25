@@ -4,7 +4,7 @@ import request from 'supertest';
 import { StudentQueryModule } from '../../../modules/student/student-query.module';
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { PrismaService } from '../../../prisma.service';
-import { StudentStatus } from '@prisma/client';
+import { STUDENT_STATUS } from '../../../common/enums';
 
 describe('StudentController (Query) (e2e)', () => {
   let app: INestApplication;
@@ -62,7 +62,7 @@ describe('StudentController (Query) (e2e)', () => {
           firstNameKana: 'タロウ',
           lastNameKana: 'タナカ',
           birthDate: new Date('2010-01-01'),
-          status: StudentStatus.ACTIVE,
+          status: STUDENT_STATUS.ACTIVE,
           joinedAt: new Date('2020-04-01'),
           leftAt: null,
           note: null,
@@ -80,7 +80,7 @@ describe('StudentController (Query) (e2e)', () => {
           firstNameKana: 'ハナコ',
           lastNameKana: 'ヤマダ',
           birthDate: new Date('2011-02-15'),
-          status: StudentStatus.ACTIVE,
+          status: STUDENT_STATUS.ACTIVE,
           joinedAt: new Date('2020-04-01'),
           leftAt: null,
           note: '特記事項あり',
@@ -99,7 +99,7 @@ describe('StudentController (Query) (e2e)', () => {
           firstNameKana: 'イチロウ',
           lastNameKana: 'サトウ',
           birthDate: new Date('2012-03-20'),
-          status: StudentStatus.ACTIVE,
+          status: STUDENT_STATUS.ACTIVE,
           joinedAt: new Date('2021-04-01'),
           leftAt: null,
           note: null,
@@ -158,7 +158,7 @@ describe('StudentController (Query) (e2e)', () => {
           firstNameKana: 'タロウ',
           lastNameKana: 'タナカ',
           birthDate: new Date('2010-01-01'),
-          status: StudentStatus.ACTIVE,
+          status: STUDENT_STATUS.ACTIVE,
           joinedAt: new Date('2020-04-01'),
           leftAt: null,
           note: 'テストメモ',
@@ -181,7 +181,7 @@ describe('StudentController (Query) (e2e)', () => {
       expect(new Date(response.body.birthDate)).toEqual(
         new Date('2010-01-01'),
       );
-      expect(response.body.status).toBe(StudentStatus.ACTIVE);
+      expect(response.body.status).toBe(STUDENT_STATUS.ACTIVE);
       expect(new Date(response.body.joinedAt)).toEqual(
         new Date('2020-04-01'),
       );
@@ -202,4 +202,3 @@ describe('StudentController (Query) (e2e)', () => {
     });
   });
 });
-
