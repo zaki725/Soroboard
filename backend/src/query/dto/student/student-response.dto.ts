@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import type { StudentStatus } from '../../../common/enums';
-import { STUDENT_STATUS } from '../../../common/enums';
+import { STUDENT_STATUSES } from '../../../common/enums';
 import { FIELD_NAME } from '../../../common/constants';
-
-const STUDENT_STATUS_VALUES = Object.values(STUDENT_STATUS) as StudentStatus[];
 
 export class StudentResponseDto {
   constructor(partial: Partial<StudentResponseDto>) {
@@ -31,7 +29,7 @@ export class StudentResponseDto {
   @ApiProperty({ description: '生年月日', nullable: true, required: false })
   birthDate: Date | null;
 
-  @ApiProperty({ description: '在籍状況', enum: STUDENT_STATUS_VALUES })
+  @ApiProperty({ description: '在籍状況', enum: STUDENT_STATUSES })
   status: StudentStatus;
 
   @ApiProperty({ description: '入会日' })
