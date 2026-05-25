@@ -3,16 +3,16 @@
 import { Loading, Title, Table, PageContainer } from '@/components/ui';
 import { FormError } from '@/components/form';
 import { MissingSchoolIdNotice } from '@/components/features';
-import { useTeacherList } from '../hooks/useTeacherList';
-import { getTableColumns } from './TeacherTableColumns';
+import { useStudentList } from '../hooks/useStudentList';
+import { getTableColumns } from './StudentTableColumns';
 
-export const TeacherManagement = () => {
-  const { teachers, isLoading, error, schoolId } = useTeacherList();
+export const StudentManagement = () => {
+  const { students, isLoading, error, schoolId } = useStudentList();
 
   if (isLoading) {
     return (
       <PageContainer>
-        <Title>先生管理</Title>
+        <Title>生徒管理</Title>
         <Loading />
       </PageContainer>
     );
@@ -21,7 +21,7 @@ export const TeacherManagement = () => {
   if (!schoolId) {
     return (
       <PageContainer>
-        <Title>先生管理</Title>
+        <Title>生徒管理</Title>
         <MissingSchoolIdNotice />
       </PageContainer>
     );
@@ -29,15 +29,15 @@ export const TeacherManagement = () => {
 
   return (
     <PageContainer>
-      <Title>先生管理</Title>
+      <Title>生徒管理</Title>
 
       <div className="bg-white rounded-lg shadow-md p-6 space-y-6 mt-6">
         <FormError error={error} />
 
         <Table
           columns={getTableColumns()}
-          data={teachers}
-          emptyMessage="先生データがありません"
+          data={students}
+          emptyMessage="生徒データがありません"
         />
       </div>
     </PageContainer>

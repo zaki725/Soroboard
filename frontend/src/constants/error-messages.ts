@@ -23,6 +23,8 @@ export const errorMessages = {
   eventLocationListFetchFailed: 'ロケーションデータの取得に失敗しました',
   // 先生関連
   teacherListFetchFailed: '先生一覧の取得に失敗しました',
+  // 生徒関連
+  studentListFetchFailed: '生徒一覧の取得に失敗しました',
   // CSV関連
   csvExportFailed: 'CSV出力に失敗しました',
   csvUploadFailed: 'CSVアップロードに失敗しました',

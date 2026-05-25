@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TeacherRole } from '@prisma/client';
+import type { TeacherRole } from '../../../common/enums';
+import { TEACHER_ROLES } from '../../../common/enums';
 import { FIELD_NAME } from '../../../common/constants';
 
 export class TeacherResponseDto {
@@ -13,7 +14,7 @@ export class TeacherResponseDto {
   @ApiProperty({ description: 'メールアドレス' })
   email: string;
 
-  @ApiProperty({ description: '塾内での役割', enum: TeacherRole })
+  @ApiProperty({ description: '塾内での役割', enum: TEACHER_ROLES })
   roleInSchool: TeacherRole;
 
   @ApiProperty({ description: '名' })

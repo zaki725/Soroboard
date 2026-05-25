@@ -5,7 +5,8 @@ import request from 'supertest';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import { Pool } from 'pg';
-import { AuthUserRole, TeacherRole } from '@prisma/client';
+import { AuthUserRole } from '@prisma/client';
+import { TEACHER_ROLE } from '../../../common/enums';
 import { AuthCommandModule } from '../../../modules/auth/auth-command.module';
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { LoggerModule } from '../../../config/logger.module';
@@ -47,7 +48,7 @@ async function createTestSchoolAndTeacher(
   await prisma.teacher.create({
     data: {
       email: 'test@example.com',
-      roleInSchool: TeacherRole.STAFF,
+      roleInSchool: TEACHER_ROLE.STAFF,
       firstName: '太郎',
       lastName: '山田',
       schoolId: school.id,

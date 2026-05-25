@@ -4,7 +4,7 @@ import request from 'supertest';
 import { TeacherQueryModule } from '../../../modules/teacher/teacher-query.module';
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { PrismaService } from '../../../prisma.service';
-import { TeacherRole } from '@prisma/client';
+import { TEACHER_ROLE } from '../../../common/enums';
 
 describe('TeacherController (Query) (e2e)', () => {
   let app: INestApplication;
@@ -56,7 +56,7 @@ describe('TeacherController (Query) (e2e)', () => {
       const teacher1 = await prisma.teacher.create({
         data: {
           email: 'teacher1@tanaka-soroban.example.com',
-          roleInSchool: TeacherRole.OWNER,
+          roleInSchool: TEACHER_ROLE.OWNER,
           firstName: '太郎',
           lastName: '田中',
           hourlyRate: null,
@@ -70,7 +70,7 @@ describe('TeacherController (Query) (e2e)', () => {
       const teacher2 = await prisma.teacher.create({
         data: {
           email: 'teacher2@tanaka-soroban.example.com',
-          roleInSchool: TeacherRole.STAFF,
+          roleInSchool: TEACHER_ROLE.STAFF,
           firstName: '花子',
           lastName: '山田',
           hourlyRate: 2500,
@@ -85,7 +85,7 @@ describe('TeacherController (Query) (e2e)', () => {
       await prisma.teacher.create({
         data: {
           email: 'teacher3@sato-soroban.example.com',
-          roleInSchool: TeacherRole.OWNER,
+          roleInSchool: TEACHER_ROLE.OWNER,
           firstName: '一郎',
           lastName: '佐藤',
           hourlyRate: null,
@@ -122,7 +122,7 @@ describe('TeacherController (Query) (e2e)', () => {
       const teacher1 = await prisma.teacher.create({
         data: {
           email: 'teacher1@tanaka-soroban.example.com',
-          roleInSchool: TeacherRole.OWNER,
+          roleInSchool: TEACHER_ROLE.OWNER,
           firstName: '太郎',
           lastName: '田中',
           hourlyRate: null,
@@ -139,7 +139,7 @@ describe('TeacherController (Query) (e2e)', () => {
       const teacher2 = await prisma.teacher.create({
         data: {
           email: 'teacher2@tanaka-soroban.example.com',
-          roleInSchool: TeacherRole.STAFF,
+          roleInSchool: TEACHER_ROLE.STAFF,
           firstName: '花子',
           lastName: '山田',
           hourlyRate: 2500,
@@ -185,7 +185,7 @@ describe('TeacherController (Query) (e2e)', () => {
       const teacher = await prisma.teacher.create({
         data: {
           email: 'teacher1@tanaka-soroban.example.com',
-          roleInSchool: TeacherRole.OWNER,
+          roleInSchool: TEACHER_ROLE.OWNER,
           firstName: '太郎',
           lastName: '田中',
           hourlyRate: null,
@@ -204,7 +204,7 @@ describe('TeacherController (Query) (e2e)', () => {
       expect(response.body).toBeDefined();
       expect(response.body.id).toBe(teacher.id);
       expect(response.body.email).toBe('teacher1@tanaka-soroban.example.com');
-      expect(response.body.roleInSchool).toBe(TeacherRole.OWNER);
+      expect(response.body.roleInSchool).toBe(TEACHER_ROLE.OWNER);
       expect(response.body.firstName).toBe('太郎');
       expect(response.body.lastName).toBe('田中');
       expect(response.body.hourlyRate).toBeNull();
@@ -226,4 +226,3 @@ describe('TeacherController (Query) (e2e)', () => {
     });
   });
 });
-
