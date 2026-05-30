@@ -11,6 +11,7 @@ export type LoginResponseDto = {
   id: string;
   email: string;
   role: AuthUserRole;
+  schoolId?: string;
   firstName: string;
   lastName: string;
 };
@@ -19,4 +20,3 @@ export const loginRequestSchema = z.object({
   email: z.string().email(INVALID.EMAIL_FORMAT),
   password: z.string().min(1, REQUIRED_FIELD(FIELD_NAME.PASSWORD)),
 });
-

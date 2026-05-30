@@ -118,9 +118,9 @@ export class AuthService {
       id: authUser.id,
       email: authUser.email,
       role: authUser.role,
+      schoolId: teacher.schoolId,
       firstName: teacher.firstName,
       lastName: teacher.lastName,
     };
   }
 }
-

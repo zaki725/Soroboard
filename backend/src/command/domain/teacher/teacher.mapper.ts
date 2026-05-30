@@ -12,9 +12,9 @@ export class TeacherMapper {
     return TeacherEntity.create({
       id: raw.id,
       email: raw.email,
+      schoolId: raw.schoolId,
       firstName: raw.firstName,
       lastName: raw.lastName,
     });
   }
 }
-
