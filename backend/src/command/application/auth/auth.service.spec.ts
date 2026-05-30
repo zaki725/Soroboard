@@ -69,6 +69,7 @@ describe('AuthService', () => {
       const teacher = TeacherEntity.create({
         id: 'teacher-id',
         email: 'test@example.com',
+        schoolId: 'school-id',
         firstName: '太郎',
         lastName: '山田',
       });
@@ -94,6 +95,7 @@ describe('AuthService', () => {
         id: authUser.id,
         email: authUser.email,
         role: authUser.role,
+        schoolId: teacher.schoolId,
         firstName: teacher.firstName,
         lastName: teacher.lastName,
       });
@@ -174,4 +176,3 @@ describe('AuthService', () => {
     });
   });
 });
-
