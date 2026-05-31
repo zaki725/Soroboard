@@ -60,7 +60,9 @@ export const Dashboard = () => {
                   >
                     <div className="flex items-center gap-3 mb-2">
                       {link.icon && (
-                        <div className="shrink-0 text-gray-600">{link.icon}</div>
+                        <div className="shrink-0 text-gray-600">
+                          {link.icon}
+                        </div>
                       )}
                       <h3 className="text-lg font-medium text-gray-900">
                         {link.label}

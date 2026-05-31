@@ -8,4 +8,4 @@ export const withSchoolId = (
 
   const separator = href.includes('?') ? '&' : '?';
   return `${href}${separator}schoolId=${encodeURIComponent(schoolId)}`;
-}
+};
