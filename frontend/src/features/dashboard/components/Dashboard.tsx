@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Title, PageContainer } from '@/components/ui';
 import { navigationLinks, roleCategoryMap } from '@/constants/navigation-links';
 import type { UserRole } from '@/types/user';
+import { withSchoolId } from '@/libs/with-school-id';
 
 type CategorySection = {
   title: string;
@@ -13,7 +14,7 @@ type CategorySection = {
 };
 
 export const Dashboard = () => {
-  const { hasRole } = useAuth();
+  const { user, hasRole } = useAuth();
 
   const teacherLinks = navigationLinks.filter(
     (link) => link.requiredRole === 'TEACHER' && hasRole(link.requiredRole),
@@ -49,23 +50,26 @@ export const Dashboard = () => {
               {section.title}
             </h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {section.links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block p-6 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-500 transition-all"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    {link.icon && (
-                      <div className="shrink-0 text-gray-600">{link.icon}</div>
-                    )}
-                    <h3 className="text-lg font-medium text-gray-900">
-                      {link.label}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600">{link.description}</p>
-                </Link>
-              ))}
+              {section.links.map((link) => {
+                const href = withSchoolId(link.href, user?.schoolId);
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="block p-6 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-500 transition-all"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      {link.icon && (
+                        <div className="shrink-0 text-gray-600">{link.icon}</div>
+                      )}
+                      <h3 className="text-lg font-medium text-gray-900">
+                        {link.label}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-gray-600">{link.description}</p>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         ))}
