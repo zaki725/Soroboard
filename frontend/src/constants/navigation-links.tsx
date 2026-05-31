@@ -64,4 +64,3 @@ export const roleCategoryMap: Record<
     description: '管理者のみ利用できる機能です',
   },
 };
-

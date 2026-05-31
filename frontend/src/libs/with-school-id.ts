@@ -1,7 +1,4 @@
-export const withSchoolId = (
-  href: string,
-  schoolId?: string,
-): string => {
+export const withSchoolId = (href: string, schoolId?: string): string => {
   if (!schoolId) return href;
 
   if (/[?&]schoolId=/.test(href)) return href;
