@@ -7,6 +7,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  schoolId?: string;
   role: UserRole;
   imageUrl?: string;
 };

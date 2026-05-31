@@ -17,6 +17,7 @@ type LoginResponseDto = {
   id: string;
   email: string;
   role: 'TEACHER' | 'ADMIN';
+  schoolId?: string;
   firstName: string;
   lastName: string;
 };
@@ -26,6 +27,7 @@ const convertToUser = (response: LoginResponseDto): User => {
   return {
     id: response.id,
     name: `${response.lastName} ${response.firstName}`,
+    schoolId: response.schoolId,
     email: response.email,
     role: response.role, // バックエンドのAuthUserRoleとフロントのUserRoleが同じなので変換不要
   };

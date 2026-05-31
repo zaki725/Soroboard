@@ -11,36 +11,41 @@ export type NavigationLink = {
   label: string;
   description: string;
   requiredRole: UserRole;
-  icon?: ReactNode; // オプショナル: サイドメニュー用
+  icon?: ReactNode;
 };
 
-// ダッシュボードとナビゲーションメニュー用のリンク（説明付き）
 export const navigationLinks: NavigationLink[] = [
   {
     href: '/applicants',
-    label: '応募者検索',
-    description: '応募者情報を検索・閲覧します',
+    label: '応募者管理',
+    description: '応募者情報を管理・確認します',
     requiredRole: 'TEACHER',
     icon: <ApplicantIcon />,
   },
   {
+    href: '/students',
+    label: '生徒管理',
+    description: '生徒一覧を表示します',
+    requiredRole: 'TEACHER',
+  },
+  {
     href: '/admin/user-management',
     label: 'ユーザー管理',
-    description: 'ユーザーの追加・編集を行います',
+    description: 'ユーザーの検索・作成・編集を行います',
     requiredRole: 'ADMIN',
     icon: <UserManagementIcon />,
   },
   {
     href: '/admin/teachers',
     label: '先生管理',
-    description: '先生の追加・編集を行います',
+    description: '先生の一覧を表示します',
     requiredRole: 'ADMIN',
     icon: <UserManagementIcon />,
   },
   {
     href: '/admin/event-location-management',
     label: 'ロケーション管理',
-    description: 'ロケーションの追加・編集を行います',
+    description: 'ロケーションの一覧を表示します',
     requiredRole: 'ADMIN',
     icon: <LocationIcon />,
   },
@@ -51,11 +56,11 @@ export const roleCategoryMap: Record<
   { title: string; description: string }
 > = {
   TEACHER: {
-    title: '一般機能',
-    description: '一般ユーザーが利用できる機能',
+    title: '先生向け',
+    description: '先生が利用できる機能です',
   },
   ADMIN: {
-    title: '管理機能',
-    description: '管理者が利用できる機能',
+    title: '管理者向け',
+    description: '管理者のみ利用できる機能です',
   },
 };

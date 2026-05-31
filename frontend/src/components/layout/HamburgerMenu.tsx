@@ -7,11 +7,12 @@ import { MenuIcon, CloseIcon } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { navigationLinks, roleCategoryMap } from '@/constants/navigation-links';
 import type { UserRole } from '@/types/user';
+import { withSchoolId } from '@/libs/with-school-id';
 
 export const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { hasRole } = useAuth();
+  const { user, hasRole } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -85,10 +86,11 @@ export const HamburgerMenu = () => {
                       </div>
                       {menuItemsByRole[role].map((item) => {
                         const isActive = pathname === item.href;
+                        const href = withSchoolId(item.href, user?.schoolId);
                         return (
                           <Link
-                            key={item.href}
-                            href={item.href}
+                            key={href}
+                            href={href}
                             onClick={handleLinkClick}
                             className={`flex items-center gap-3 px-4 py-3 transition-colors ${
                               isActive

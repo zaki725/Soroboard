@@ -7,9 +7,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { navigationLinks, roleCategoryMap } from '@/constants/navigation-links';
 import { USER_ROLES } from '@/constants/enums';
 import type { UserRole } from '@/types/user';
+import { withSchoolId } from '@/libs/with-school-id';
 
 export const NavigationMenu = () => {
-  const { hasRole } = useAuth();
+  const { user, hasRole } = useAuth();
   const pathname = usePathname();
   const [hoveredRole, setHoveredRole] = useState<UserRole | null>(null);
 
@@ -57,10 +58,11 @@ export const NavigationMenu = () => {
                   </div>
                   {links.map((link) => {
                     const isActive = pathname === link.href;
+                    const href = withSchoolId(link.href, user?.schoolId);
                     return (
                       <Link
-                        key={link.href}
-                        href={link.href}
+                        key={href}
+                        href={href}
                         className={`block px-3 py-2 text-sm rounded-md transition-colors ${
                           isActive
                             ? 'bg-blue-100 text-blue-700'
