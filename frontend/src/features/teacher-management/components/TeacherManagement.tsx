@@ -2,27 +2,17 @@
 
 import { Loading, Title, Table, PageContainer } from '@/components/ui';
 import { FormError } from '@/components/form';
-import { MissingSchoolIdNotice } from '@/components/features';
 import { useTeacherList } from '../hooks/useTeacherList';
 import { getTableColumns } from './TeacherTableColumns';
 
 export const TeacherManagement = () => {
-  const { teachers, isLoading, error, schoolId } = useTeacherList();
+  const { teachers, isLoading, error } = useTeacherList();
 
   if (isLoading) {
     return (
       <PageContainer>
         <Title>先生管理</Title>
         <Loading />
-      </PageContainer>
-    );
-  }
-
-  if (!schoolId) {
-    return (
-      <PageContainer>
-        <Title>先生管理</Title>
-        <MissingSchoolIdNotice />
       </PageContainer>
     );
   }
