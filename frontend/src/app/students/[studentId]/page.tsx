@@ -6,14 +6,16 @@ import { MissingSchoolIdNotice } from '@/components/features';
 import { Title, PageContainer } from '@/components/ui';
 import { StudentDetail } from '@/features/student-management/components/StudentDetail';
 import { useParams, useSearchParams } from 'next/navigation';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const StudentDetailPage = () => {
   const { setItems } = useBreadcrumb();
-  const params = useParams< {studentId: string} >();
+  const params = useParams<{ studentId: string }>();
   const searchParams = useSearchParams();
 
   const schoolId = searchParams.get('schoolId');
   const studentId = params.studentId;
+  usePageTitle('生徒詳細');
 
   useEffect(() => {
     setItems([

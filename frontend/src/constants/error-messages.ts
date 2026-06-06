@@ -25,6 +25,7 @@ export const errorMessages = {
   teacherListFetchFailed: '先生一覧の取得に失敗しました',
   // 生徒関連
   studentListFetchFailed: '生徒一覧の取得に失敗しました',
+  studentFetchFailed: '生徒の取得に失敗しました',
   // CSV関連
   csvExportFailed: 'CSV出力に失敗しました',
   csvUploadFailed: 'CSVアップロードに失敗しました',

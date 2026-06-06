@@ -25,7 +25,7 @@ export const useStudentDetail = (studentId: string, schoolId: string) => {
   // エラーメッセージを取得
   const error = useMemo(() => {
     if (!swrError) return null;
-    return extractErrorMessage(swrError, errorMessages.studentListFetchFailed);
+    return extractErrorMessage(swrError, errorMessages.studentFetchFailed);
   }, [swrError]);
 
   return {
