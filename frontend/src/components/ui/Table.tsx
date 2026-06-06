@@ -129,7 +129,12 @@ export const Table = <T extends Record<string, unknown>>({
                         key={String(column.key)}
                         className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                         onClick={(e) => {
-                          if (onRowClick) {
+                          if (!onRowClick) return;
+                          const target = e.target as HTMLElement | null;
+                          const interactive = target?.closest(
+                            'a,button,input,select,textarea,[role="button"]',
+                          );
+                          if (interactive) {
                             e.stopPropagation();
                           }
                         }}

@@ -5,9 +5,12 @@ import { FormError } from '@/components/form';
 import { MissingSchoolIdNotice } from '@/components/features';
 import { useStudentList } from '../hooks/useStudentList';
 import { getTableColumns } from './StudentTableColumns';
+import { withSchoolId } from '@/libs/with-school-id';
+import { useRouter } from 'next/navigation';
 
 export const StudentManagement = () => {
   const { students, isLoading, error, schoolId } = useStudentList();
+  const router = useRouter();
 
   if (isLoading) {
     return (
@@ -38,6 +41,9 @@ export const StudentManagement = () => {
           columns={getTableColumns()}
           data={students}
           emptyMessage="生徒データがありません"
+          onRowClick={(row) => {
+            router.push(withSchoolId(`/students/${row.id}`, schoolId))
+          }}
         />
       </div>
     </PageContainer>
