@@ -5,16 +5,14 @@ import { extractErrorMessage } from '@/libs/error-handler';
 import { errorMessages } from '@/constants/error-messages';
 import type { StudentResponseDto } from '@/types/student';
 
-export const useStudentDetail = (studentId: string, schoolId: string) => {
-
+export const useStudentDetail = (studentId: string) => {
   const searchKey = useMemo(() => {
-    if (!schoolId || !studentId) {
+    if (!studentId) {
       return null;
     }
-    return buildSWRKey(`/students/${studentId}`, {}, { schoolId });
-  }, [studentId, schoolId]);
+    return buildSWRKey(`/students/${studentId}`);
+  }, [studentId]);
 
-  // SWRでデータ取得（共通のuseSWRDataを使用）
   const {
     data: student,
     error: swrError,
@@ -22,17 +20,15 @@ export const useStudentDetail = (studentId: string, schoolId: string) => {
     mutate,
   } = useSWRData<StudentResponseDto>(searchKey);
 
-  // エラーメッセージを取得
   const error = useMemo(() => {
     if (!swrError) return null;
     return extractErrorMessage(swrError, errorMessages.studentFetchFailed);
   }, [swrError]);
 
   return {
-    student: student || null,
+    student: student ?? null,
     isLoading,
     error,
     mutate,
-    schoolId,
   };
 };

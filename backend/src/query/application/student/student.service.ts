@@ -9,14 +9,24 @@ import { Student } from '@prisma/client';
 export class StudentService {
   constructor(private readonly studentDao: StudentDao) {}
 
-  async findAllBySchoolId({ schoolId }: { schoolId: string }): Promise<StudentResponseDto[]> {
+  async findAllBySchoolId({
+    schoolId,
+  }: {
+    schoolId: string;
+  }): Promise<StudentResponseDto[]> {
     const students = await this.studentDao.findAllBySchoolId({ schoolId });
 
     return students.map((student) => this.toDto(student));
   }
 
-  async findOne({ id }: { id: string }): Promise<StudentResponseDto> {
-    const student = await this.studentDao.findOne({ id });
+  async findOne({
+    id,
+    schoolId,
+  }: {
+    id: string;
+    schoolId: string;
+  }): Promise<StudentResponseDto> {
+    const student = await this.studentDao.findOne({ id, schoolId });
     if (!student) {
       throw new NotFoundError(RESOURCE_NAME.STUDENT, id);
     }
@@ -41,4 +51,3 @@ export class StudentService {
     });
   }
 }
-

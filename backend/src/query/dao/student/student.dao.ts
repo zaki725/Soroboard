@@ -6,22 +6,28 @@ import { Student } from '@prisma/client';
 export class StudentDao {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAllBySchoolId({ schoolId }: { schoolId: string }): Promise<Student[]> {
+  async findAllBySchoolId({
+    schoolId,
+  }: {
+    schoolId: string;
+  }): Promise<Student[]> {
     const students = await this.prisma.student.findMany({
       where: { schoolId },
-      orderBy: [
-        { studentNo: 'asc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ studentNo: 'asc' }, { createdAt: 'desc' }],
     });
 
     return students;
   }
 
-  async findOne({ id }: { id: string }): Promise<Student | null> {
-    return this.prisma.student.findUnique({
-      where: { id },
+  async findOne({
+    id,
+    schoolId,
+  }: {
+    id: string;
+    schoolId: string;
+  }): Promise<Student | null> {
+    return this.prisma.student.findFirst({
+      where: { id, schoolId },
     });
   }
 }
-
