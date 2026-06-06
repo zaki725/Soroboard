@@ -5,23 +5,28 @@ import { extractErrorMessage } from '@/libs/error-handler';
 import { errorMessages } from '@/constants/error-messages';
 import type { StudentResponseDto } from '@/types/student';
 
-export const useStudentList = () => {
-  const searchKey = useMemo(() => buildSWRKey('/students'), []);
+export const useStudentDetail = (studentId: string) => {
+  const searchKey = useMemo(() => {
+    if (!studentId) {
+      return null;
+    }
+    return buildSWRKey(`/students/${studentId}`);
+  }, [studentId]);
 
   const {
-    data: students,
+    data: student,
     error: swrError,
     isLoading,
     mutate,
-  } = useSWRData<StudentResponseDto[]>(searchKey);
+  } = useSWRData<StudentResponseDto>(searchKey);
 
   const error = useMemo(() => {
     if (!swrError) return null;
-    return extractErrorMessage(swrError, errorMessages.studentListFetchFailed);
+    return extractErrorMessage(swrError, errorMessages.studentFetchFailed);
   }, [swrError]);
 
   return {
-    students: students || [],
+    student: student ?? null,
     isLoading,
     error,
     mutate,

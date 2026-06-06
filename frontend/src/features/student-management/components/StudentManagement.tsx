@@ -1,28 +1,20 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Loading, Title, Table, PageContainer } from '@/components/ui';
 import { FormError } from '@/components/form';
-import { MissingSchoolIdNotice } from '@/components/features';
 import { useStudentList } from '../hooks/useStudentList';
 import { getTableColumns } from './StudentTableColumns';
 
 export const StudentManagement = () => {
-  const { students, isLoading, error, schoolId } = useStudentList();
+  const { students, isLoading, error } = useStudentList();
+  const router = useRouter();
 
   if (isLoading) {
     return (
       <PageContainer>
         <Title>生徒管理</Title>
         <Loading />
-      </PageContainer>
-    );
-  }
-
-  if (!schoolId) {
-    return (
-      <PageContainer>
-        <Title>生徒管理</Title>
-        <MissingSchoolIdNotice />
       </PageContainer>
     );
   }
@@ -38,6 +30,9 @@ export const StudentManagement = () => {
           columns={getTableColumns()}
           data={students}
           emptyMessage="生徒データがありません"
+          onRowClick={(row) => {
+            router.push(`/students/${row.id}`);
+          }}
         />
       </div>
     </PageContainer>

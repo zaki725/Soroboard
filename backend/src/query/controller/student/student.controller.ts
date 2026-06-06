@@ -1,14 +1,20 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Param, Req } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { StudentService } from '../../application/student/student.service';
 import { StudentResponseDto } from '../../dto/student/student-response.dto';
-import {
-  studentListQuerySchema,
-  type StudentListQueryDto,
-} from '../../dto/student/student-list-query.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
-import { FIELD_NAME } from '../../../common/constants';
+import { AUTHENTICATION_REQUIRED, FIELD_NAME } from '../../../common/constants';
 import { studentIdParamSchema } from '../../../common/dto/id-param.dto';
+import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
+
+type RequestWithSession = Request & {
+  session?: {
+    user?: {
+      schoolId?: string;
+    };
+  };
+};
 
 @ApiTags('students')
 @Controller('students')
@@ -17,19 +23,19 @@ export class StudentController {
 
   @Get()
   @ApiOperation({ summary: '生徒一覧を取得' })
-  @ApiQuery({ name: 'schoolId', required: true, description: FIELD_NAME.SCHOOL_ID })
   @ApiResponse({
     status: 200,
     description: '生徒一覧を取得しました',
     type: [StudentResponseDto],
   })
-  @ApiResponse({ status: 400, description: 'リクエストが不正です' })
+  @ApiResponse({ status: 401, description: '認証が必要です' })
   async findAllBySchoolId(
-    @Query(new ZodValidationPipe(studentListQuerySchema))
-    query: StudentListQueryDto,
+    @Req() req: RequestWithSession,
   ): Promise<StudentResponseDto[]> {
+    const schoolId = this.getSessionSchoolId(req);
+
     return this.studentService.findAllBySchoolId({
-      schoolId: query.schoolId,
+      schoolId,
     });
   }
 
@@ -41,12 +47,24 @@ export class StudentController {
     description: '生徒詳細を取得しました',
     type: StudentResponseDto,
   })
+  @ApiResponse({ status: 401, description: '認証が必要です' })
   @ApiResponse({ status: 404, description: '生徒が見つかりません' })
   async findOne(
+    @Req() req: RequestWithSession,
     @Param('id', new ZodValidationPipe(studentIdParamSchema))
     id: string,
   ): Promise<StudentResponseDto> {
-    return this.studentService.findOne({ id });
+    const schoolId = this.getSessionSchoolId(req);
+
+    return this.studentService.findOne({ id, schoolId });
+  }
+
+  private getSessionSchoolId(req: RequestWithSession): string {
+    const schoolId = req.session?.user?.schoolId;
+    if (!schoolId) {
+      throw new UnauthorizedError(AUTHENTICATION_REQUIRED);
+    }
+
+    return schoolId;
   }
 }
-

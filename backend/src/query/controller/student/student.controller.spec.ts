@@ -1,10 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
+import type { NextFunction, Request, Response } from 'express';
 import { StudentQueryModule } from '../../../modules/student/student-query.module';
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { PrismaService } from '../../../prisma.service';
 import { STUDENT_STATUS } from '../../../common/enums';
+
+type RequestWithSession = Request & {
+  session?: {
+    user?: {
+      id: string;
+      email: string;
+      role: string;
+      schoolId?: string;
+      firstName: string;
+      lastName: string;
+    };
+  };
+};
 
 describe('StudentController (Query) (e2e)', () => {
   let app: INestApplication;
@@ -16,6 +30,27 @@ describe('StudentController (Query) (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.use((req: RequestWithSession, _res: Response, next: NextFunction) => {
+      const schoolIdHeader = req.headers['x-test-school-id'];
+      const schoolId = Array.isArray(schoolIdHeader)
+        ? schoolIdHeader[0]
+        : schoolIdHeader;
+
+      if (schoolId) {
+        req.session = {
+          user: {
+            id: 'test-user-id',
+            email: 'test@example.com',
+            role: 'TEACHER',
+            schoolId,
+            firstName: 'Test',
+            lastName: 'User',
+          },
+        };
+      }
+
+      next();
+    });
     await app.init();
 
     prisma = app.get(PrismaService);
@@ -110,7 +145,8 @@ describe('StudentController (Query) (e2e)', () => {
 
       // school1の生徒のみ取得
       const response = await request(app.getHttpServer())
-        .get(`/students?schoolId=${school1.id}`)
+        .get('/students')
+        .set('x-test-school-id', school1.id)
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
@@ -120,18 +156,18 @@ describe('StudentController (Query) (e2e)', () => {
           (s: { schoolId: string }) => s.schoolId === school1.id,
         ),
       ).toBe(true);
-      expect(response.body.some((s: { id: string }) => s.id === student1.id)).toBe(
-        true,
-      );
-      expect(response.body.some((s: { id: string }) => s.id === student2.id)).toBe(
-        true,
-      );
+      expect(
+        response.body.some((s: { id: string }) => s.id === student1.id),
+      ).toBe(true);
+      expect(
+        response.body.some((s: { id: string }) => s.id === student2.id),
+      ).toBe(true);
     });
 
-    it('異常系: schoolIdなしで400が返る', async () => {
+    it('異常系: schoolIdなしで401が返る', async () => {
       const response = await request(app.getHttpServer())
         .get('/students')
-        .expect(400);
+        .expect(401);
 
       expect(response.body).toBeDefined();
       expect(response.body.message).toBeDefined();
@@ -169,6 +205,7 @@ describe('StudentController (Query) (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get(`/students/${student.id}`)
+        .set('x-test-school-id', school.id)
         .expect(200);
 
       expect(response.body).toBeDefined();
@@ -178,15 +215,57 @@ describe('StudentController (Query) (e2e)', () => {
       expect(response.body.lastName).toBe('田中');
       expect(response.body.firstNameKana).toBe('タロウ');
       expect(response.body.lastNameKana).toBe('タナカ');
-      expect(new Date(response.body.birthDate)).toEqual(
-        new Date('2010-01-01'),
-      );
+      expect(new Date(response.body.birthDate)).toEqual(new Date('2010-01-01'));
       expect(response.body.status).toBe(STUDENT_STATUS.ACTIVE);
-      expect(new Date(response.body.joinedAt)).toEqual(
-        new Date('2020-04-01'),
-      );
+      expect(new Date(response.body.joinedAt)).toEqual(new Date('2020-04-01'));
       expect(response.body.leftAt).toBeNull();
       expect(response.body.note).toBe('テストメモ');
+    });
+
+    it('異常系: 別schoolの生徒IDで404が返る', async () => {
+      const school1 = await prisma.school.create({
+        data: {
+          name: '田中そろばん教室',
+          isActive: true,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const school2 = await prisma.school.create({
+        data: {
+          name: '佐藤そろばん教室',
+          isActive: true,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const student = await prisma.student.create({
+        data: {
+          schoolId: school2.id,
+          studentNo: 'S001',
+          firstName: '一郎',
+          lastName: '佐藤',
+          firstNameKana: 'イチロウ',
+          lastNameKana: 'サトウ',
+          birthDate: new Date('2012-03-20'),
+          status: STUDENT_STATUS.ACTIVE,
+          joinedAt: new Date('2021-04-01'),
+          leftAt: null,
+          note: null,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .get(`/students/${student.id}`)
+        .set('x-test-school-id', school1.id)
+        .expect(404);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.statusCode).toBe(404);
     });
 
     it('異常系: 存在しないIDで404が返る', async () => {
@@ -194,6 +273,7 @@ describe('StudentController (Query) (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get(`/students/${nonExistentId}`)
+        .set('x-test-school-id', '01HZJQKX9Y8N7M6P5Q4R3S2T1U0V')
         .expect(404);
 
       expect(response.body).toBeDefined();
