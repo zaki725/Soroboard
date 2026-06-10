@@ -3,4 +3,3 @@ export { DeleteDialog } from './DeleteDialog';
 export { SaveSearchConditionDialog } from './SaveSearchConditionDialog';
 export { SaveSearchConditionButton } from './SaveSearchConditionButton';
 export { SearchConditionListDialog } from './SearchConditionListDialog';
-export { MissingSchoolIdNotice } from './MissingSchoolIdNotice';

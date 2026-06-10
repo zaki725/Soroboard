@@ -174,6 +174,159 @@ describe('StudentController (Query) (e2e)', () => {
     });
   });
 
+  describe('GET /students/search', () => {
+    it('正常系: キーワードに一致するログイン中の塾の生徒だけ返ってくる', async () => {
+      const school1 = await prisma.school.create({
+        data: {
+          name: 'Search School 1',
+          isActive: true,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const school2 = await prisma.school.create({
+        data: {
+          name: 'Search School 2',
+          isActive: true,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const matchedStudent = await prisma.student.create({
+        data: {
+          schoolId: school1.id,
+          studentNo: 'S100',
+          firstName: 'Alice',
+          lastName: 'Tanaka',
+          firstNameKana: 'Alice',
+          lastNameKana: 'Tanaka',
+          birthDate: new Date('2010-01-01'),
+          status: STUDENT_STATUS.ACTIVE,
+          joinedAt: new Date('2020-04-01'),
+          leftAt: null,
+          note: null,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      await prisma.student.create({
+        data: {
+          schoolId: school1.id,
+          studentNo: 'S200',
+          firstName: 'Bob',
+          lastName: 'Suzuki',
+          firstNameKana: 'Bob',
+          lastNameKana: 'Suzuki',
+          birthDate: new Date('2011-02-15'),
+          status: STUDENT_STATUS.ACTIVE,
+          joinedAt: new Date('2020-04-01'),
+          leftAt: null,
+          note: null,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      await prisma.student.create({
+        data: {
+          schoolId: school2.id,
+          studentNo: 'S300',
+          firstName: 'Alice',
+          lastName: 'OtherSchool',
+          firstNameKana: 'Alice',
+          lastNameKana: 'OtherSchool',
+          birthDate: new Date('2012-03-20'),
+          status: STUDENT_STATUS.ACTIVE,
+          joinedAt: new Date('2021-04-01'),
+          leftAt: null,
+          note: null,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .get('/students/search')
+        .query({ search: 'Alice' })
+        .set('x-test-school-id', school1.id)
+        .expect(200);
+
+      expect(response.body).toHaveLength(1);
+      expect(response.body[0].id).toBe(matchedStudent.id);
+      expect(response.body[0].schoolId).toBe(school1.id);
+    });
+
+    it('正常系: 在籍状態で生徒を絞り込める', async () => {
+      const school = await prisma.school.create({
+        data: {
+          name: 'Status Search School',
+          isActive: true,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const activeStudent = await prisma.student.create({
+        data: {
+          schoolId: school.id,
+          studentNo: 'S101',
+          firstName: 'Active',
+          lastName: 'Student',
+          firstNameKana: 'Active',
+          lastNameKana: 'Student',
+          birthDate: new Date('2010-01-01'),
+          status: STUDENT_STATUS.ACTIVE,
+          joinedAt: new Date('2020-04-01'),
+          leftAt: null,
+          note: null,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      await prisma.student.create({
+        data: {
+          schoolId: school.id,
+          studentNo: 'S102',
+          firstName: 'Withdrawn',
+          lastName: 'Student',
+          firstNameKana: 'Withdrawn',
+          lastNameKana: 'Student',
+          birthDate: new Date('2011-02-15'),
+          status: STUDENT_STATUS.WITHDRAWN,
+          joinedAt: new Date('2020-04-01'),
+          leftAt: new Date('2022-03-31'),
+          note: null,
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .get('/students/search')
+        .query({ status: STUDENT_STATUS.ACTIVE })
+        .set('x-test-school-id', school.id)
+        .expect(200);
+
+      expect(response.body).toHaveLength(1);
+      expect(response.body[0].id).toBe(activeStudent.id);
+      expect(response.body[0].status).toBe(STUDENT_STATUS.ACTIVE);
+    });
+
+    it('異常系: schoolIdなしで401が返る', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/students/search')
+        .query({ search: 'Alice' })
+        .expect(401);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBeDefined();
+    });
+  });
+
   describe('GET /students/:id', () => {
     it('正常系: 存在するIDで200が返り、期待した項目が入っている', async () => {
       const school = await prisma.school.create({

@@ -1,6 +1,9 @@
 import { z } from 'zod';
-import { schoolBasedListQuerySchema } from '../../../common/dto/school-based-list-query.dto';
+import { STUDENT_STATUSES } from '../../../common/enums';
 
-export const studentListQuerySchema = schoolBasedListQuerySchema;
-export type StudentListQueryDto = z.infer<typeof studentListQuerySchema>;
+export const studentListQuerySchema = z.object({
+  search: z.string().optional(),
+  status: z.enum(STUDENT_STATUSES).optional(),
+});
 
+export type StudentListRequestDto = z.infer<typeof studentListQuerySchema>;

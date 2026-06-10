@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Controller, Get, Param, Req, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { StudentService } from '../../application/student/student.service';
@@ -7,6 +7,9 @@ import { ZodValidationPipe } from '../../../common/pipes/zod-validation.pipe';
 import { AUTHENTICATION_REQUIRED, FIELD_NAME } from '../../../common/constants';
 import { studentIdParamSchema } from '../../../common/dto/id-param.dto';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
+import { studentListQuerySchema } from '../../dto/student/student-list-query.dto';
+import type { StudentListRequestDto } from '../../dto/student/student-list-query.dto';
+import { StudentSearchService } from '../../application/student/student-search.service';
 
 type RequestWithSession = Request & {
   session?: {
@@ -19,7 +22,10 @@ type RequestWithSession = Request & {
 @ApiTags('students')
 @Controller('students')
 export class StudentController {
-  constructor(private readonly studentService: StudentService) {}
+  constructor(
+    private readonly studentService: StudentService,
+    private readonly studentSearchService: StudentSearchService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '生徒一覧を取得' })
@@ -36,6 +42,28 @@ export class StudentController {
 
     return this.studentService.findAllBySchoolId({
       schoolId,
+    });
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: '生徒を検索' })
+  @ApiResponse({
+    status: 200,
+    description: '生徒検索結果を取得しました',
+    type: [StudentResponseDto],
+  })
+  @ApiResponse({ status: 401, description: '認証が必要です' })
+  async search(
+    @Req() req: RequestWithSession,
+    @Query(new ZodValidationPipe(studentListQuerySchema))
+    query: StudentListRequestDto
+  ): Promise<StudentResponseDto[]> {
+    const schoolId = this.getSessionSchoolId(req);
+
+    return this.studentSearchService.search({
+      schoolId,
+      search: query.search,
+      status: query.status,
     });
   }
 

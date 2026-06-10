@@ -23,10 +23,15 @@ export class TeacherDao {
     return teachers;
   }
 
-  async findOne({ id }: { id: string }): Promise<Teacher | null> {
-    return this.prisma.teacher.findUnique({
-      where: { id },
+  async findOne({
+    id,
+    schoolId,
+  }: {
+    id: string;
+    schoolId: string;
+  }): Promise<Teacher | null> {
+    return this.prisma.teacher.findFirst({
+      where: { id, schoolId },
     });
   }
 }
-

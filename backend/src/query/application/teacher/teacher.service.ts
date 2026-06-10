@@ -21,8 +21,14 @@ export class TeacherService {
     return teachers.map((teacher) => this.toDto(teacher));
   }
 
-  async findOne({ id }: { id: string }): Promise<TeacherResponseDto> {
-    const teacher = await this.teacherDao.findOne({ id });
+  async findOne({
+    id,
+    schoolId,
+  }: {
+    id: string;
+    schoolId: string;
+  }): Promise<TeacherResponseDto> {
+    const teacher = await this.teacherDao.findOne({ id, schoolId });
     if (!teacher) {
       throw new NotFoundError(RESOURCE_NAME.TEACHER, id);
     }
@@ -44,4 +50,3 @@ export class TeacherService {
     });
   }
 }
-
