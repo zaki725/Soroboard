@@ -8,7 +8,7 @@ import { AUTHENTICATION_REQUIRED, FIELD_NAME } from '../../../common/constants';
 import { studentIdParamSchema } from '../../../common/dto/id-param.dto';
 import { UnauthorizedError } from '../../../common/errors/unauthorized.error';
 import { studentListQuerySchema } from '../../dto/student/student-list-query.dto';
-import type { StudentListQueryDto } from '../../dto/student/student-list-query.dto';
+import type { StudentListRequestDto } from '../../dto/student/student-list-query.dto';
 import { StudentSearchService } from '../../application/student/student-search.service';
 
 type RequestWithSession = Request & {
@@ -56,7 +56,7 @@ export class StudentController {
   async search(
     @Req() req: RequestWithSession,
     @Query(new ZodValidationPipe(studentListQuerySchema))
-    query: StudentListQueryDto
+    query: StudentListRequestDto
   ): Promise<StudentResponseDto[]> {
     const schoolId = this.getSessionSchoolId(req);
 

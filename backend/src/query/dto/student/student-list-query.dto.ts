@@ -6,4 +6,4 @@ export const studentListQuerySchema = z.object({
   status: z.enum(STUDENT_STATUSES).optional(),
 });
 
-export type StudentListQueryDto = z.infer<typeof studentListQuerySchema>;
+export type StudentListRequestDto = z.infer<typeof studentListQuerySchema>;
