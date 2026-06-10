@@ -45,12 +45,12 @@ export const TEACHER_ROLE = {
 } as const;
 
 // 生徒の在籍状況
-export type StudentStatus = 'ACTIVE' | 'SUSPENDED' | 'WITHDRAWN';
-export const STUDENT_STATUSES: StudentStatus[] = [
+export const STUDENT_STATUSES = [
   'ACTIVE',
   'SUSPENDED',
   'WITHDRAWN',
-];
+] as const;
+export type StudentStatus = (typeof STUDENT_STATUSES)[number];
 export const STUDENT_STATUS = {
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',
